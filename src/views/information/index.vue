@@ -167,9 +167,10 @@ export default {
     background: rgb(0, 186, 173);
     color: #fff;
 }
-
 .wrap {
     position: absolute;
+    width 100%
+    overflow hiddend
     left: 0;
     right: 0;
     top: 234px;

@@ -27,6 +27,7 @@ export default {
     components: {},
     methods: {
         hideBox() {
+            this.text = ''
             this.$emit('hideBox')
         },
         sendReply() {
@@ -36,7 +37,8 @@ export default {
             }
             this.$axios.post('http://58.22.125.43:8888/comment/addComment?phone=' + this.$store.state.phone + '&id=' + this.id, params).then((res) => {
                 Toast(res.data.message)
-                console.log(res)
+                this.hideBox()
+                // console.log(res)
                 // 考虑到名字拿不到 头像拿不到的因素，缓存难度大
                 // 固重新请求一次数据把
             })

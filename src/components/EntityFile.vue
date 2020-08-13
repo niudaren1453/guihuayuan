@@ -24,10 +24,10 @@
                                     <i class="iconfont icon-wendang"></i>
                                     <div>转移</div>
                                 </div>
-                                <div class="btn-li">
+                                <!-- <div class="btn-li">
                                     <i class="iconfont icon-wendang"></i>
                                     <div>归还</div>
-                                </div>
+                                </div> -->
                                 <div class="btn-li">
                                     <i class="iconfont icon-wendang"></i>
                                     <a :href="item2.fileUrl">
@@ -68,22 +68,25 @@
                         <p>回复</p>
                     </div>
                     </div>-->
+                    <div class="action-btn">
+                        <mt-button @click.native="handleShowReply(item2.id)"  size="normal">评论</mt-button>
+                    </div>
                     <div class="file-content file-child" v-for="(item3, index3) in item2.listComment" :key="index3">
                         <div class="file-left">
-                            <img src />
+                            <!-- <img src /> -->
                         </div>
                         <div class="file-mid">
                             <div class="mid-top">
                                 <p>{{item3.commentContent}}</p>
                             </div>
                             <div class="mid-bot">
-                                <p>{{item3.commentProson}}</p>
-                                <p>上传时间：{{item3.commentTime}}</p>
+                                <p>{{item3.commentProson}}</p>&nbsp;&nbsp;
+                                <p style="margin-left: 10px">评论时间：{{item3.commentTime}}</p>
                             </div>
                         </div>
-                        <div class="file-right">
-                            <div @click="handleShowReply(item2.id)">评论</div>
-                        </div>
+                        <!-- <div class="file-right">
+                            <div >评论</div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -151,7 +154,10 @@ export default {
     line-height: 40px;
     font-size: 18px;
     display: flex;
-    padding: 0 20px;
+    overflow hidden
+    div{
+        margin-left 10px
+    }
 }
 
 .item {
@@ -281,6 +287,10 @@ export default {
     // position relative
     width: 100%;
     // border-bottom 4px solid rgb(231, 231, 231)
+    .action-btn {
+        display flex
+        justify-content flex-end
+    }
     .file-type {
         position: absolute;
         right: 35px;
@@ -323,7 +333,6 @@ export default {
                 flex: 1;
                 width: 100%;
                 font-size: 15px;
-
                 p {
                     white-space: nowrap;
                     overflow: hidden;
@@ -337,7 +346,7 @@ export default {
                 font-size: 12px;
                 color: gray;
                 overflow: hidden;
-                justify-content: space-around;
+                // justify-content: space-around;
             }
         }
 
@@ -359,15 +368,17 @@ export default {
     }
 
     .file-child {
-        border-bottom  1px solid rgb(231, 231, 231)
+        border-top  1px solid rgb(231, 231, 231)
         .file-left {
-            flex: 3;
+            // flex: 3;
+            flex: 1;
             justify-content: flex-end;
             margin-right: 10px;
         }
 
         .file-mid {
-            flex: 9;
+            // flex: 9;
+            flex: 20;
         }
 
         .file-right {
