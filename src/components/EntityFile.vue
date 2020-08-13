@@ -24,10 +24,6 @@
                                     <i class="iconfont icon-wendang"></i>
                                     <div>转移</div>
                                 </div>
-                                <!-- <div class="btn-li">
-                                    <i class="iconfont icon-wendang"></i>
-                                    <div>归还</div>
-                                </div> -->
                                 <div class="btn-li">
                                     <i class="iconfont icon-wendang"></i>
                                     <a :href="item2.fileUrl">
@@ -41,6 +37,10 @@
                                 <div class="btn-li" @click="handleShowReplyItem(index,index2)">
                                     <i class="iconfont icon-wendang"></i>
                                     <div>评论</div>
+                                </div>
+                                <div class="btn-li">
+                                    <i class="iconfont icon-wendang"></i>
+                                <div>锁定文件</div>
                                 </div>
                             </div>
                         </div>

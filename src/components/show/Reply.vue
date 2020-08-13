@@ -31,6 +31,10 @@ export default {
             this.$emit('hideBox')
         },
         sendReply() {
+            if (this.text === '') {
+                Toast('评论内容不能为空')
+                return
+            }
             const commentContent = this.text
             const params = {
                 commentContent

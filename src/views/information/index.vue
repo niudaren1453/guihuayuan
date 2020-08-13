@@ -8,11 +8,27 @@
             <ProjectNav v-on:getInfo="getInfo" :list="items" />
         </nav>
         <main class="wrap">
+            <!-- 以下分为2种情况 一个是非更多的内容 ,还有一个是更多的内容 -->
             <EntityFile :items= this.$store.state.informationList v-on:handleShowImg="handleShowImg"
-            v-on:handleShowReplyItem="handleShowReplyItem"></EntityFile>
-            <!-- <ProjectApproval/> -->
-            <!-- <router-view></router-view> -->
-            <!-- <EntityFile :items="list" v-on:handleShowImg="handleShowImg"></EntityFile> -->
+            v-on:handleShowReplyItem="handleShowReplyItem" v-if='isEntityFile'></EntityFile>
+            <div v-else>
+                <mt-navbar v-model="selected">
+                    <mt-tab-item id="1">发布任务 </mt-tab-item>
+                    <mt-tab-item id="2">项目星标</mt-tab-item>
+                    <mt-tab-item id="3">项目归档</mt-tab-item>
+                </mt-navbar>
+                <mt-tab-container v-model="selected">
+                <mt-tab-container-item id="1">
+                    我是发布的内容
+                </mt-tab-container-item>
+                <mt-tab-container-item id="2">
+                    我是项目星标内容
+                </mt-tab-container-item>
+                <mt-tab-container-item id="3">
+                    我是项目归档的内容
+                </mt-tab-container-item>
+            </mt-tab-container>
+            </div>
         </main>
         <footer>
             <router-link tag="div" :to="{name:'uploadFile',query:{id:id,typeId:typeId}}">+</router-link>
@@ -30,19 +46,20 @@ import ShowImg from '@/components/ShowImg'
 export default {
     data() {
         return {
-            id: 1,
-            typeId: 1,
-            address: ['electronicsfile1', 'electronicsfile2'],
-            ShowImg: false,
-            ImgCode:
-                'http://qeiw9gjvi.bkt.clouddn.com/a5bb3834-64fb-4b9b-b1a7-99003ef537d4.jpg',
-            items: [
+            id: 1, // 未使用?
+            typeId: 1, // 当前类型id    未使用
+            // address: ['electronicsfile1', 'electronicsfile2'],
+            ShowImg: false, // 是否二维码显示
+            isEntityFile: true, // 是否隐藏entityfile
+            selected: '', // 更多内容tab使用
+            ImgCode: '', // 二维码的code
+            items: [ // projectNav的数组
                 {
                     id: 1,
                     color: 'red',
                     title: '立项文件',
                     notice: true,
-                    isColor: true,
+                    isColor: false,
                     noticeNum: 2
                 },
                 {
@@ -50,42 +67,42 @@ export default {
                     color: 'blue',
                     title: '基础资料',
                     notice: false,
-                    isColor: true
+                    isColor: false
                 },
                 {
                     id: 3,
                     color: 'green',
                     title: '现场照片',
                     notice: false,
-                    isColor: true
+                    isColor: false
                 },
                 {
                     id: 4,
                     color: 'teal',
                     title: '设计文件',
                     notice: false,
-                    isColor: true
+                    isColor: false
                 },
                 {
                     id: 5,
                     color: 'red',
                     title: '批复文件',
                     notice: false,
-                    isColor: true
+                    isColor: false
                 },
                 {
                     id: 6,
                     color: 'blue',
                     title: '往来函件',
                     notice: false,
-                    isColor: true
+                    isColor: false
                 },
                 {
                     id: 7,
                     color: 'green',
                     title: '竣工文件',
                     notice: false,
-                    isColor: true
+                    isColor: false
                 },
                 {
                     id: 8,
@@ -93,11 +110,11 @@ export default {
                     title: '更多',
                     notice: true,
                     noticeNum: 1,
-                    isColor: true
+                    isColor: false
                 }
             ],
-            list: [],
-            cacheList: []
+            list: [], // 除了更多内容外的其他7个的显示内容数据 ,已经使用store替代
+            cacheList: [] // 缓存使用,已经使用store替代
         }
     },
     components: {
@@ -110,6 +127,7 @@ export default {
     mounted() {
         const { id } = this.$route.query
         this.id = id
+        this.items[0].isColor = true // 选中状态
         const listParams = { // store使用
             id,
             type: 1
@@ -128,15 +146,26 @@ export default {
         },
         // 内容获取
         getInfo(e) {
-            if (this.$store.state.informationListCache[e - 1] === undefined) {
-                const listParams = { // store使用
-                    id: this.id,
-                    type: e
-                }
-                this.getInformationListFun(listParams) // action
+            // 对选中状态时候字变红的处理
+            for (let i = 0; i < this.items.length; i++) {
+                this.items[i].isColor = false // 其他状态
+            }
+            this.items[e - 1].isColor = true // 当前状态
+            // 判断是不是8 8是更多内容
+            if (e === 8) {
+                this.isEntityFile = false
             } else {
+                this.isEntityFile = true
+                if (this.$store.state.informationListCache[e - 1] === undefined) {
+                    const listParams = { // store使用
+                        id: this.id,
+                        type: e
+                    }
+                    this.getInformationListFun(listParams) // action
+                } else {
                 // 使用缓存
-                this.$store.commit('changeInformationList', e)
+                    this.$store.commit('changeInformationList', e)
+                }
             }
         },
         // 展示二维码
@@ -206,4 +235,8 @@ footer {
         background: rgba(211, 211, 211, 0.8);
     }
 }
+.mint-navbar
+    .mint-tab-item
+        border 1px solid #e7e7e7
+        box-shadow 0 0 2px #000
 </style>

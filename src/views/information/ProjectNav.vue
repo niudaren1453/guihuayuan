@@ -13,7 +13,7 @@
                 </a>
                 <p>{{item.title}}</p>
             </router-link> -->
-            <li v-for="(item, index) in list" :key="index" @click="getInfo(item.id)">
+            <li v-for="(item, index) in list" :key="index" @click="getInfo(item.id)" :class="item.isColor?'active':''">
                 <a class="button" :style="{background:item.color}">
                     <div v-if="item.notice" class="notice">{{item.noticeNum}}</div>
                 </a>
@@ -137,5 +137,7 @@ export default {
         p
             padding-top 5px
 .router-link-active
+    color red
+.active
     color red
 </style>

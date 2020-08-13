@@ -1,4 +1,4 @@
-# guihuayuan
+# 规划院项目
 
 ## 安装依赖
 ```
@@ -21,7 +21,7 @@ npm run lint
 ```
 
 ### 自定义配置cli
-See [Configuration Reference](https://cli.vuejs.org/config/).
+详情看 [Configuration Reference](https://cli.vuejs.org/config/).
 # guihuayuan
 
 
