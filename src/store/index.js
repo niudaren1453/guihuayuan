@@ -41,13 +41,17 @@ export default new Vuex.Store({
                             // console.log(res.data[i].date[j].fileName)
                             // 以下是对后端返回处理结果
                             if (res.data[i].date[j].fileName.indexOf('.pptx') !== -1) {
-                                res.data[i].date[j].fileImgSrc = 'http://qeiw9gjvi.bkt.clouddn.com/pdf.png'
+                                res.data[i].date[j].fileImgSrc = 'http://qeiw9gjvi.bkt.clouddn.com/pptx.png'
                             } else if (res.data[i].date[j].fileName.indexOf('.xsls') !== -1) {
                                 res.data[i].date[j].fileImgSrc = 'http://qeiw9gjvi.bkt.clouddn.com/Execl.png'
                             } else if (res.data[i].date[j].fileName.indexOf('.docx') !== -1) {
                                 res.data[i].date[j].fileImgSrc = 'http://qeiw9gjvi.bkt.clouddn.com/word.png'
                             } else if (res.data[i].date[j].fileName.indexOf('.jpg') !== -1) {
                                 res.data[i].date[j].fileImgSrc = 'http://qeiw9gjvi.bkt.clouddn.com/%E5%9B%BE%E7%89%87.png'
+                            } else if (res.data[i].date[j].fileName.indexOf('.txt') !== -1) {
+                                res.data[i].date[j].fileImgSrc = 'http://qeiw9gjvi.bkt.clouddn.com/txt.png'
+                            } else if (res.data[i].date[j].fileName.indexOf('.pdf') !== -1) {
+                                res.data[i].date[j].fileImgSrc = 'http://qeiw9gjvi.bkt.clouddn.com/pdf.png'
                             }
                         }
                     }

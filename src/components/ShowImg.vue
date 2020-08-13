@@ -17,6 +17,7 @@ export default {
     components: {},
     methods: {
         handleHideImg(e) {
+            // this.ShowImg = false
             this.$emit('handleHideImg', e)
         }
     }

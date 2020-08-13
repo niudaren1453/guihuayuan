@@ -1,6 +1,6 @@
 <template>
     <div class="Infomation">
-        <mt-header title="xiangmu">
+        <mt-header title="项目">
             <mt-button icon="back" slot="left" @click="back"></mt-button>
         </mt-header>
         <!-- <NewAdd></NewAdd> -->
@@ -17,7 +17,7 @@
         <footer>
             <router-link tag="div" :to="{name:'uploadFile',query:{id:id,typeId:typeId}}">+</router-link>
         </footer>
-        <ShowImg :ShowImg="ShowImg" :ImgCode="ImgCode" handleHideImg="handleHideImg" />
+        <ShowImg :ShowImg="ShowImg" :ImgCode="ImgCode" v-on:handleHideImg="handleHideImg" />
     </div>
 </template>
 
@@ -48,7 +48,7 @@ export default {
                 {
                     id: 2,
                     color: 'blue',
-                    title: '前期资料',
+                    title: '基础资料',
                     notice: false,
                     isColor: true
                 },
@@ -69,14 +69,14 @@ export default {
                 {
                     id: 5,
                     color: 'red',
-                    title: '阶段审查',
+                    title: '批复文件',
                     notice: false,
                     isColor: true
                 },
                 {
                     id: 6,
                     color: 'blue',
-                    title: '过程文件',
+                    title: '往来函件',
                     notice: false,
                     isColor: true
                 },
@@ -141,12 +141,13 @@ export default {
         },
         // 展示二维码
         handleShowImg(e) {
-            // console.log(e)
+            // e是动态的,e是接口返回的数据
             this.ImgCode = e
             this.ShowImg = true
         },
         // 隐藏二维码
         handleHideImg(e) {
+            console.log(11)
             this.ShowImg = false
         },
         // 显示隐藏评论列表
