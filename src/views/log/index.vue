@@ -1,6 +1,6 @@
 <template>
     <div class="log">
-        <mt-header title='xiangmu'>
+        <mt-header title='项目'>
             <mt-button icon="back" slot="left" @click="back"></mt-button>
     </mt-header>
     <Log :list = "list" />

@@ -2,7 +2,7 @@
     <div class="login">
         <mt-header title="设计院"></mt-header>
         <!-- 页面内容 -->
-        <div style="padding: 20px;font-size:20px">手机登陆</div>
+        <div style="padding: 20px;font-size:20px;text-align: center;">手机登陆</div>
         <mt-field label="手机号" placeholder="请输入手机号" type="tel" v-model="phone">
             <mt-button
                 type="primary"
@@ -12,6 +12,11 @@
             >{{codeText}}</mt-button>
         </mt-field>
         <mt-field label="验证码" :readonly='isReadonly' v-model="captcha" :placeholder="isReadonly?'请获取验证码':'请输入验证码'"></mt-field>
+        <div style=" align-items: center; box-sizing: border-box;
+            display: flex; font-size: 16px;line-height: 1;min-height: inherit;
+            overflow: hidden;padding: 0 10px;width: 100%; height:30px">
+        <input type="checkbox" :checked="isChecked"> <label>记住登陆状态 </label>
+        </div>
         <mt-button type="primary" :disabled="isLogin" size="large" @click.native="handleLogin">登陆</mt-button>
             <!-- {{this.$store.state.phone}} -->
     </div>
@@ -29,7 +34,8 @@ export default {
             isTimer: true, // 是否禁用获取验证码按钮
             isLogin: true, // 是否禁用登录按钮
             // popupVisible: true, // 是否
-            isReadonly: true // 是否可编辑
+            isReadonly: true, // 是否可编辑,
+            isChecked: false // 是否选中登陆状态
         }
     },
     mounted() {},

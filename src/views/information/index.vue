@@ -14,7 +14,7 @@
             <div v-else>
                 <mt-navbar v-model="selected">
                     <mt-tab-item id="1">发布任务 </mt-tab-item>
-                    <mt-tab-item id="2">项目星标</mt-tab-item>
+                    <mt-tab-item id="2" >项目星标</mt-tab-item>
                     <mt-tab-item id="3">项目归档</mt-tab-item>
                 </mt-navbar>
                 <mt-tab-container v-model="selected">
@@ -22,10 +22,10 @@
                     我是发布的内容
                 </mt-tab-container-item>
                 <mt-tab-container-item id="2">
-                    我是项目星标内容
+                    {{star}}
                 </mt-tab-container-item>
                 <mt-tab-container-item id="3">
-                    我是项目归档的内容
+                    {{file}}
                 </mt-tab-container-item>
             </mt-tab-container>
             </div>
@@ -33,6 +33,7 @@
         <footer>
             <router-link tag="div" :to="{name:'uploadFile',query:{id:id,typeId:typeId}}">+</router-link>
         </footer>
+        <!-- 用来显示二维码的组件 -->
         <ShowImg :ShowImg="ShowImg" :ImgCode="ImgCode" v-on:handleHideImg="handleHideImg" />
     </div>
 </template>
@@ -46,13 +47,17 @@ import ShowImg from '@/components/ShowImg'
 export default {
     data() {
         return {
-            id: 1, // 未使用?
+            id: 1, // id
             typeId: 1, // 当前类型id    未使用
             // address: ['electronicsfile1', 'electronicsfile2'],
             ShowImg: false, // 是否二维码显示
             isEntityFile: true, // 是否隐藏entityfile
-            selected: '', // 更多内容tab使用
+            selected: 0, // 更多内容tab使用
             ImgCode: '', // 二维码的code
+            // more 使用
+            file: '', // 归档字符
+            star: '', // 星标字符
+            // -----------
             items: [ // projectNav的数组
                 {
                     id: 1,
@@ -187,6 +192,27 @@ export default {
             this.$store.state.informationList[arr[0]].date[arr[1]].isShowComment = !this.$store.state.informationList[arr[0]].date[arr[1]].isShowComment
             // 截取
             // this.list
+        }
+    },
+    watch: {
+        // 监听selected
+        selected() {
+            if (this.selected === '1') {
+                return ''
+            } else if (this.selected === '2') {
+                this.$axios('http://58.22.125.43:8888/project/addCollect/' + this.$store.phone + '/' + this.id).then(
+                    (res) => {
+                        // console.log(res.data.message)
+                        this.star = res.data.message
+                    }
+                )
+            } else if (this.selected === '3') {
+                this.$axios('http://58.22.125.43:8888/project/updateProjectFinish/' + this.id).then(
+                    (res) => {
+                        this.file = res.data.message
+                    }
+                )
+            }
         }
     }
 }

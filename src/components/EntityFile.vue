@@ -19,7 +19,7 @@
                                 <div>{{item2.uploadTime}}</div>
                                 <div>{{item2.uploadPerson}}</div>
                             </div>
-                            <div class="btn-ul">
+                            <div :class="item2.fileLock=='1'?'btn-ul-lock':'btn-ul'">
                                 <div class="btn-li" @click="handleShowImg(item2.qrcodeImageUrl)">
                                     <i class="iconfont icon-wendang"></i>
                                     <div>转移</div>
@@ -38,36 +38,18 @@
                                     <i class="iconfont icon-wendang"></i>
                                     <div>评论</div>
                                 </div>
-                                <div class="btn-li">
+                                <div class="btn-li" @click="handleLockFile(index,index2,item2.id)">
                                     <i class="iconfont icon-wendang"></i>
                                 <div>锁定文件</div>
                                 </div>
+                                  <!-- 纱布 -->
+                                 <div class="gauze" v-if="item2.fileLock == '1'"> </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <!-- 判断来显示渲染 -->
                 <div class="file-item" v-if="item2.isShowComment">
-                    <!-- <div class="file-type">
-                    <p>{{item.filetype}}</p>
-                    </div>-->
-                    <!-- <div class="file-content">
-                    <div class="file-left">
-                        <img src />
-                    </div>
-                    <div class="file-mid">
-                        <div class="mid-top">
-                            <p>{{item.title}}</p>
-                        </div>
-                        <div class="mid-bot">
-                            <p>{{item.name}}</p>
-                            <p>上传时间：{{item.date}}</p>
-                        </div>
-                    </div>
-                    <div class="file-right">
-                        <p>回复</p>
-                    </div>
-                    </div>-->
                     <div class="action-btn">
                         <mt-button @click.native="handleShowReply(item2.id)"  size="normal">评论</mt-button>
                     </div>
@@ -84,9 +66,6 @@
                                 <p style="margin-left: 10px">评论时间：{{item3.commentTime}}</p>
                             </div>
                         </div>
-                        <!-- <div class="file-right">
-                            <div >评论</div>
-                        </div> -->
                     </div>
                 </div>
             </div>
@@ -97,6 +76,7 @@
 
 <script>
 import Reply from './show/Reply'
+import { Toast } from 'mint-ui'
 export default {
     data() {
         return {
@@ -140,6 +120,24 @@ export default {
         },
         hideBox(e) {
             this.isShowReply = false
+        },
+        // 锁定文件
+        handleLockFile(index1, index2, e) {
+            this.$axios('http://58.22.125.43:8888/file/fileLock/' + e).then((res) => {
+                console.log(res)
+                if (res.data.flag === true) {
+                    Toast(res.data.message)
+                    // 更改当前选定的变色
+                    console.log(index1)
+                    console.log(index2)
+                    this.$store.state.list[index1].date[index2].fileLock = '1'
+                    console.log(this.$store.state.informationList[index1].date[index2])
+                } else {
+                    Toast('文件锁定失败')
+                }
+                // 根据返回的东西进行判断是否锁定文件成功
+            })
+            console.log(e)
         }
     }
 }
@@ -159,7 +157,10 @@ export default {
         margin-left 10px
     }
 }
-
+.gauze
+    position absolute
+    width 100%
+    height 100%
 .item {
     padding: 0 10px;
 
@@ -182,7 +183,6 @@ export default {
             justify-content: center;
             align-items: center;
             height: 50px;
-
             img {
                 height: 40px;
                 width: 40px;
@@ -223,13 +223,13 @@ export default {
                 display: flex;
                 width: 50%;
                 font-size: 11px;
-
+                color: gray;
+                position relative
                 .btn-li {
                     flex: 1;
                     display: flex;
                     flex-direction: column;
                     text-align: center;
-
                     &:nth-child(1) {
                         color: red;
                     }
@@ -245,6 +245,21 @@ export default {
                     &:nth-child(4) {
                         color: teal;
                     }
+                }
+            }
+// lock
+            .btn-ul-lock {
+                flex: 1;
+                display: flex;
+                width: 50%;
+                font-size: 11px;
+                color: gray;
+                position relative
+                .btn-li {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    text-align: center;
                 }
             }
         }
@@ -394,5 +409,9 @@ export default {
             }
         }
     }
+}
+
+.lock-color{
+    color gray
 }
 </style>
