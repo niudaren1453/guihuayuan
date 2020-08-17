@@ -76,7 +76,8 @@
 
 <script>
 import Reply from './show/Reply'
-import { Toast } from 'mint-ui'
+import { Toast, MessageBox } from 'mint-ui'
+
 export default {
     data() {
         return {
@@ -123,21 +124,28 @@ export default {
         },
         // 锁定文件
         handleLockFile(index1, index2, e) {
-            this.$axios('http://58.22.125.43:8888/file/fileLock/' + e).then((res) => {
-                console.log(res)
-                if (res.data.flag === true) {
-                    Toast(res.data.message)
-                    // 更改当前选定的变色
-                    console.log(index1)
-                    console.log(index2)
-                    this.$store.state.informationList[index1].date[index2].fileLock = '1'
-                    console.log(this.$store.state.informationList[index1].date[index2])
-                } else {
-                    Toast('文件锁定失败')
+            MessageBox({
+                title: '提示',
+                message: '确定执行此操作?',
+                showCancelButton: true
+            }).then(action => {
+                if (action === 'confirm') {
+                    this.$axios('http://58.22.125.43:8888/file/fileLock/' + e).then((res) => {
+                        console.log(res)
+                        if (res.data.flag === true) {
+                            Toast(res.data.message)
+                            // 更改当前选定的变色
+                            console.log(index1)
+                            console.log(index2)
+                            this.$store.state.informationList[index1].date[index2].fileLock = '1'
+                            console.log(this.$store.state.informationList[index1].date[index2])
+                        } else {
+                            Toast('文件锁定失败')
+                        }
+                        // 根据返回的东西进行判断是否锁定文件成功
+                    })
                 }
-                // 根据返回的东西进行判断是否锁定文件成功
             })
-            console.log(e)
         }
     }
 }

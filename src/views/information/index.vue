@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { Toast } from 'mint-ui'
+import { Toast, MessageBox } from 'mint-ui'
 import ProjectNav from './ProjectNav'
 // import NewAdd from '@/components/NewAdd'
 import EntityFile from '@/components/EntityFile'
@@ -201,20 +201,40 @@ export default {
             if (this.selected === '1') {
                 return ''
             } else if (this.selected === '2') {
-                this.$axios('http://58.22.125.43:8888/project/addCollect/' + this.$store.phone + '/' + this.id).then(
-                    (res) => {
-                        // console.log(res.data.message)
-                        // this.star = res.data.message
-                        Toast(res.data.message)
+                MessageBox({
+                    title: '提示',
+                    message: '确定执行此操作?',
+                    showCancelButton: true
+                }).then(action => {
+                    if (action === 'confirm') {
+                        this.$axios('http://58.22.125.43:8888/project/addCollect/' + this.$store.phone + '/' + this.id).then(
+                            (res) => {
+                                // console.log(res.data.message)
+                                // this.star = res.data.message
+                                Toast(res.data.message)
+                            }
+                        )
+                        // 当用户点了取消变0
+                    } else {
+                        this.selected = 0
                     }
-                )
+                })
             } else if (this.selected === '3') {
-                this.$axios('http://58.22.125.43:8888/project/updateProjectFinish/' + this.id).then(
-                    (res) => {
-                        // this.file = res.data.message
-                        Toast(res.data.message)
+                MessageBox({
+                    title: '提示',
+                    message: '确定执行此操作?',
+                    showCancelButton: true
+                }).then(action => {
+                    if (action === 'confirm') {
+                        this.$axios('http://58.22.125.43:8888/project/updateProjectFinish/' + this.id).then(
+                            (res) => {
+                                Toast(res.data.message)
+                            }
+                        )
+                    } else {
                     }
-                )
+                    this.selected = 0
+                })
             }
         }
     }
