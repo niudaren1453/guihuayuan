@@ -130,7 +130,7 @@ export default {
                     // 更改当前选定的变色
                     console.log(index1)
                     console.log(index2)
-                    this.$store.state.list[index1].date[index2].fileLock = '1'
+                    this.$store.state.informationList[index1].date[index2].fileLock = '1'
                     console.log(this.$store.state.informationList[index1].date[index2])
                 } else {
                     Toast('文件锁定失败')

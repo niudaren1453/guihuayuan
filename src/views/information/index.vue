@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import { Toast } from 'mint-ui'
 import ProjectNav from './ProjectNav'
 // import NewAdd from '@/components/NewAdd'
 import EntityFile from '@/components/EntityFile'
@@ -203,13 +204,15 @@ export default {
                 this.$axios('http://58.22.125.43:8888/project/addCollect/' + this.$store.phone + '/' + this.id).then(
                     (res) => {
                         // console.log(res.data.message)
-                        this.star = res.data.message
+                        // this.star = res.data.message
+                        Toast(res.data.message)
                     }
                 )
             } else if (this.selected === '3') {
                 this.$axios('http://58.22.125.43:8888/project/updateProjectFinish/' + this.id).then(
                     (res) => {
-                        this.file = res.data.message
+                        // this.file = res.data.message
+                        Toast(res.data.message)
                     }
                 )
             }
