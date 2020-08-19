@@ -6,14 +6,14 @@
             @click.native="showSearch"></mt-button>
             <mt-button v-if="type"  slot="right" class="iconfont icon-icon-test"></mt-button>
         </mt-header>
-        <!--  -->
-        <!-- <div v-if="isShowSearch" class="search-shadow" @click.self="handleCloseSearch">
-            <div class="search-box">
-                <mt-field  placeholder="请输入搜索标题" v-model="searchValue">
-                    <mt-button type="primary" size="small" @click.native='handleSearch'>搜索</mt-button>
-                </mt-field>
+         <!-- -->
+            <div v-if="isShowSearchBox" class="search-shadow" @click.self="handleCloseSearch">
+                <div class="search-box">
+                    <mt-field  placeholder="请输入搜索标题" v-model="searchValue">
+                        <mt-button type="primary" size="small" @click.native='handleSearch'>搜索</mt-button>
+                    </mt-field>
+                </div>
             </div>
-        </div> -->
         <!-- search -->
         <Search :isShowSearch='isShowSearch' :searchValue='searchValue' v-on:back='back'/>
     </header>
@@ -25,6 +25,7 @@ export default {
     data() {
         return {
             searchValue: '',
+            isShowSearchBox: false,
             isShowSearch: false
         }
     },
@@ -38,15 +39,16 @@ export default {
     methods: {
         // 显示搜索事件
         showSearch () {
-            this.isShowSearch = true
+            this.isShowSearchBox = true
         },
         // 点击搜索事件
         handleSearch () {
-            console.log(11)
+            // console.log(11)
+            this.isShowSearch = true
         },
         // 点击关闭窗口
         handleCloseSearch () {
-            this.isShowSearch = false
+            this.isShowSearchBox = false
         },
         back() {
             this.isShowSearch = false

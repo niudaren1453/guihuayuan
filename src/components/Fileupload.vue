@@ -7,13 +7,13 @@
                 <tr>
                     <td>项目id:</td>
                     <td>
-                        <input type="text" name="projectId" :value= this.$route.query.id disabled= true  />
+                        <input type="text" name="projectId" :value='id' readonly  />
                     </td>
                 </tr>
                 <tr>
                     <td>登录人手机号:</td>
                     <td>
-                        <input type="text" name="phone" :value= this.$store.state.phone disabled= true />
+                        <input type="text" name="phone" :value='phone' readonly  />
                     </td>
                 </tr>
                 <tr>
@@ -65,11 +65,16 @@
 export default {
     data() {
         return {
+            id: this.$route.query.id,
+            phone: this.$store.state.phone
         }
     },
     components: {},
     mounted() {
         console.log(this.$route.query.id)
+    },
+    created: {
+
     },
     methods: {
     }

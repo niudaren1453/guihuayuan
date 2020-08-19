@@ -19,7 +19,7 @@
                 </mt-navbar>
                 <mt-tab-container v-model="selected">
                 <mt-tab-container-item id="1">
-                    我是发布的内容
+                    <!-- 我是发布的内容 -->
                 </mt-tab-container-item>
                 <mt-tab-container-item id="2">
                     {{star}}
@@ -35,6 +35,8 @@
         </footer>
         <!-- 用来显示二维码的组件 -->
         <ShowImg :ShowImg="ShowImg" :ImgCode="ImgCode" v-on:handleHideImg="handleHideImg" />
+        <!-- 发布任务组件 -->
+        <AssignTask v-if='assign.isShow'> </AssignTask>
     </div>
 </template>
 
@@ -43,8 +45,9 @@ import { Toast, MessageBox } from 'mint-ui'
 import ProjectNav from './ProjectNav'
 // import NewAdd from '@/components/NewAdd'
 import EntityFile from '@/components/EntityFile'
-import ShowImg from '@/components/ShowImg'
+import ShowImg from '@/components/show/ShowImg'
 // import ProjectApproval from '../components/ProjectApproval'
+import AssignTask from './components/AssignTask'
 export default {
     data() {
         return {
@@ -120,20 +123,26 @@ export default {
                 }
             ],
             list: [], // 除了更多内容外的其他7个的显示内容数据 ,已经使用store替代
-            cacheList: [] // 缓存使用,已经使用store替代
+            cacheList: [], // 缓存使用,已经使用store替代
+            assign: { // 发布任务弹窗的对象
+                isShow: false,
+                params: ''
+            }
         }
     },
     components: {
         ProjectNav,
         // NewAdd,
         EntityFile,
-        ShowImg
+        ShowImg,
+        AssignTask
         // ProjectApproval
     },
     mounted() {
         const { id } = this.$route.query
         this.id = id
         this.items[0].isColor = true // 选中状态
+        // console.log(this.$store.phone)
         const listParams = { // store使用
             id,
             type: 1
@@ -199,7 +208,17 @@ export default {
         // 监听selected
         selected() {
             if (this.selected === '1') {
-                return ''
+                MessageBox({
+                    title: '提示',
+                    message: '确定执行此操作?',
+                    showCancelButton: true
+                }).then(action => {
+                    if (action === 'confirm') {
+                        this.assign.isShow = true
+                    } else {
+                        this.selected = 0
+                    }
+                })
             } else if (this.selected === '2') {
                 MessageBox({
                     title: '提示',
@@ -207,7 +226,7 @@ export default {
                     showCancelButton: true
                 }).then(action => {
                     if (action === 'confirm') {
-                        this.$axios('http://58.22.125.43:8888/project/addCollect/' + this.$store.phone + '/' + this.id).then(
+                        this.$axios('http://58.22.125.43:8888/project/addCollect/' + this.$store.state.phone + '/' + this.id).then(
                             (res) => {
                                 // console.log(res.data.message)
                                 // this.star = res.data.message
@@ -266,7 +285,6 @@ footer {
     right: 0;
     bottom: 0;
     overflow: hidden;
-
     div {
         position: absolute;
         display: flex;
