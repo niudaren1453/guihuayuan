@@ -15,18 +15,26 @@
                 </div>
             </div>
         <!-- search -->
-        <Search :isShowSearch='isShowSearch' :searchValue='searchValue' v-on:back='back'/>
+        <Search :isShowSearch='isShowSearch' :searchValue='searchValue' v-on:back='back'
+        :list='list' v-on:handleSearch='handleSearch' v-on:handleCurrentChange="handleCurrentChange" :pages = 'pages'/>
     </header>
 </template>
 
 <script>
 import Search from './Search'
+import { Toast } from 'mint-ui'
 export default {
     data() {
         return {
             searchValue: '',
             isShowSearchBox: false,
-            isShowSearch: false
+            isShowSearch: false,
+            list: [], // 查询结果
+            pages: { // 分页
+                currentPage: 1,
+                limit: 10,
+                total: null
+            }
         }
     },
     props: {
@@ -41,10 +49,18 @@ export default {
         showSearch () {
             this.isShowSearchBox = true
         },
-        // 点击搜索事件
-        handleSearch () {
-            // console.log(11)
-            this.isShowSearch = true
+        // 点击搜索
+        handleSearch (e) {
+            // console.log(typeof e)
+            // 判断e是否是string类型来做获取数据
+            if (typeof e === 'string') {
+                this.search(e)
+            } else {
+                this.search(this.searchValue)
+            }
+        },
+        handleCurrentChange(o) {
+            this.search(o.searchValue, o.pagenum)
         },
         // 点击关闭窗口
         handleCloseSearch () {
@@ -53,6 +69,25 @@ export default {
         back() {
             this.isShowSearch = false
             console.log(233)
+        },
+        // -----------------------------
+        search(v, p) {
+            if (v !== '' || p !== '') {
+                this.isShowSearch = true
+                const params = {
+                    currentPage: 1 | p,
+                    pageSize: '10',
+                    queryString: v
+                }
+                this.$axios.post('http://58.22.125.43:8888/project/findBycondition', params).then(res => {
+                    console.log(res)
+                    this.list = res.data.rows
+                    this.isShowSearchBox = false
+                    this.pages.total = res.data.total
+                })
+            } else {
+                Toast('搜索不能为空')
+            }
         }
     }
 }

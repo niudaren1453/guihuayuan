@@ -16,10 +16,13 @@
                     <mt-tab-item id="1">发布任务 </mt-tab-item>
                     <mt-tab-item id="2" >项目星标</mt-tab-item>
                     <mt-tab-item id="3">项目归档</mt-tab-item>
+                    <mt-tab-item id="4">修改项目名</mt-tab-item>
+                    <mt-tab-item id="5">任务列表</mt-tab-item>
+
                 </mt-navbar>
-                <mt-tab-container v-model="selected">
+                <!-- <mt-tab-container v-model="selected">
                 <mt-tab-container-item id="1">
-                    <!-- 我是发布的内容 -->
+                    我是发布的内容
                 </mt-tab-container-item>
                 <mt-tab-container-item id="2">
                     {{star}}
@@ -27,7 +30,7 @@
                 <mt-tab-container-item id="3">
                     {{file}}
                 </mt-tab-container-item>
-            </mt-tab-container>
+            </mt-tab-container> -->
             </div>
         </main>
         <footer>
@@ -248,6 +251,9 @@ export default {
                         this.$axios('http://58.22.125.43:8888/project/updateProjectFinish/' + this.id).then(
                             (res) => {
                                 Toast(res.data.message)
+                                setTimeout(() => {
+                                    this.$router.go(0)
+                                }, 2000)
                             }
                         )
                     } else {

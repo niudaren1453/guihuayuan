@@ -1,6 +1,8 @@
 <template>
-    <div id="Main">
-        <router-view></router-view>
+    <div id="project">
+        <keep-alive>
+            <router-view></router-view>
+        </keep-alive>
         <Tabbar />
     </div>
 </template>

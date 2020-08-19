@@ -21,8 +21,8 @@
                             </div>
                             <div :class="item2.fileLock=='1'?'btn-ul-lock':'btn-ul'">
                                 <div class="btn-li" @click="handleShowImg(item2.qrcodeImageUrl)">
-                                    <i class="iconfont icon-wendang"></i>
-                                    <div>转移</div>
+                                    <!-- <i class="iconfont icon-wendang" v-show= false></i> -->
+                                    <div>任务列表</div>
                                 </div>
                                 <div class="btn-li">
                                     <i class="iconfont icon-wendang"></i>
@@ -232,12 +232,16 @@ export default {
                 width: 50%;
                 font-size: 11px;
                 color: gray;
+                overflow-y hidden
                 position relative
+                overflow-y:hidden;
                 .btn-li {
                     flex: 1;
                     display: flex;
                     flex-direction: column;
                     text-align: center;
+                    align-items center
+                    justify-content center
                     &:nth-child(1) {
                         color: red;
                     }
