@@ -1,11 +1,14 @@
 <template>
     <div class="entityfile-tem">
-        <div v-for="(item, index) in items" :key="index" class="hideContent" :ref="'ref'+index">
+        <div v-for="(item, index) in items" :key="index"  >
+            <!-- class="hideContent" -->
+            <!-- :ref="'ref'+index" -->
             <div class="headerBox" @click="showContent(index)">
                 <div>{{item.title}}</div>
-                <i class="iconfont icon-xiajiantou"></i>
+                <i class="iconfont" :class="item.ishidden?'icon-xiajiantou':'icon-xiangshang'"></i>
             </div>
-            <div class="item" v-for="(item2, index2) in item.date" :key="index2">
+            <template v-if='item.ishidden'>
+            <div class="item" v-for="(item2, index2) in item.date" :key="index2" >
                 <div class="title">{{item2.title}}</div>
                 <div class="content-item">
                     <div class="left">
@@ -69,6 +72,7 @@
                     </div>
                 </div>
             </div>
+            </template>
         </div>
         <Reply :isShow = isShowReply v-on:hideBox = hideBox :id = id />
     </div>
@@ -103,16 +107,21 @@ export default {
         showContent(index) {
             // console.log(index)
             // console.log(this.$refs)
-            const ref = 'ref' + index
-            if (this.$refs[ref][0].className === '') {
-                this.$refs[ref][0].className = 'hideContent'
-                this.$refs[ref][0].firstChild.childNodes[1].className =
-                    'iconfont icon-xiajiantou'
-            } else {
-                this.$refs[ref][0].className = ''
-                this.$refs[ref][0].firstChild.childNodes[1].className =
-                    'iconfont icon-xiangshang'
-            }
+            // 待完善
+            this.$emit('showContent', index)
+            // 由于是在store写的！！不推荐直接更改state数据
+            console.log(this.$store.state.informationList[index])
+            this.$store.state.informationList[index].ishidden = !this.$store.state.informationList[index].ishidden
+            // const ref = 'ref' + index
+            // if (this.$refs[ref][0].className === '') {
+            //     this.$refs[ref][0].className = 'hideContent'
+            //     this.$refs[ref][0].firstChild.childNodes[1].className =
+            //         'iconfont icon-xiajiantou'
+            // } else {
+            //     this.$refs[ref][0].className = ''
+            //     this.$refs[ref][0].firstChild.childNodes[1].className =
+            //         'iconfont icon-xiangshang'
+            // }
         },
         handleShowReply(e) {
             this.isShowReply = true

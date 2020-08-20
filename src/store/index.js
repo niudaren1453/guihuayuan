@@ -60,6 +60,7 @@ export default new Vuex.Store({
                 })
         }
     },
+    // 等功能逻辑组多的时候使用
     modules: {
     }
 })

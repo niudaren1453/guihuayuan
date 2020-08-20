@@ -3,25 +3,28 @@
         <Header title="项目"></Header>
         <main class="wrap">
             <div class="box" v-for="(item, index) in list" :key="index">
-                <div class="box-title">
-                    <font class="iconfont icon-xingxing"></font>
+                <div class="box-title" @click='handleShow(index)'>
+                    <font class="iconfont icon-xingxing"   ></font>
                     <label>{{item.title}} ({{item.count}})</label>
-                    <font class="iconfont icon-xiajiantou" style="float:right"></font>
+                    <font class="iconfont" style="float:right"
+                    :class="item.ishidden?'icon-xiangshang':'icon-xiajiantou'"></font>
                 </div>
-                <router-link :to="{name:'information',query:{id:item2.id}}" v-for="(item2, index2) in item.date" :key="index2">
-                    <div class="box-content">
-                        <div class="content-top">
-                            <p>{{item2.projectTitle}}</p>
-                            <p>{{item2.projectProgress}}%</p>
+                <template v-if="item.ishidden">
+                    <router-link :to="{name:'information',query:{id:item2.id}}" v-for="(item2, index2) in item.date" :key="index2">
+                        <div class="box-content">
+                            <div class="content-top">
+                                <p>{{item2.projectTitle}}</p>
+                                <p>{{item2.projectProgress}}%</p>
+                            </div>
+                            <div class="content-mid">{{item2.unit}}</div>
+                            <div class="content-bottom">
+                                <p>{{item2.auThor}}</p>
+                                <div>{{item2.dept}}</div>
+                                <font class="iconfont icon-icon-user">{{item2.deptNum}}</font>
+                            </div>
                         </div>
-                        <div class="content-mid">{{item2.unit}}</div>
-                        <div class="content-bottom">
-                            <p>{{item2.auThor}}</p>
-                            <div>{{item2.dept}}</div>
-                            <font class="iconfont icon-icon-user">{{item2.deptNum}}</font>
-                        </div>
-                    </div>
-                </router-link>
+                    </router-link>
+                </template>
             </div>
         </main>
     </div>
@@ -98,6 +101,10 @@ export default {
         })
     },
     methods: {
+        handleShow (i) {
+            // console.log(i)
+            this.list[i].ishidden = !this.list[i].ishidden
+        }
     }
 }
 </script>

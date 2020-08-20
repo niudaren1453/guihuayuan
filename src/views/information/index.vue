@@ -11,6 +11,7 @@
             <!-- 以下分为2种情况 一个是非更多的内容 ,还有一个是更多的内容 -->
             <EntityFile :items= this.$store.state.informationList v-on:handleShowImg="handleShowImg"
             v-on:handleShowReplyItem="handleShowReplyItem" v-if='isEntityFile'></EntityFile>
+             <!-- v-on:showContent='showContent' -->
             <div v-else>
                 <mt-navbar v-model="selected">
                     <mt-tab-item id="1">发布任务 </mt-tab-item>
@@ -206,6 +207,11 @@ export default {
             // 截取
             // this.list
         }
+        // 折叠
+        // showContent(e) {
+        //     console.log(this.list[e])
+        //     // this.list[e].ishidden = !this.list[e].ishidden
+        // }
     },
     watch: {
         // 监听selected
