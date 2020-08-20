@@ -143,15 +143,36 @@ export default {
         // ProjectApproval
     },
     mounted() {
+        // 考虑到路由因素哎~~~~~
+        // const { id } = this.$route.query
+        // this.id = id
+        // this.items[0].isColor = true // 选中状态
+        // console.log(this.$store.phone)
+        // const listParams = { // store使用
+        //     id,
+        //     type: 1
+        // }
+        // this.getInformationListFun(listParams) // action
+    },
+    destroyed() {
+        console.log(1)
+    },
+    activated () {
+        console.log(111)
         const { id } = this.$route.query
         this.id = id
         this.items[0].isColor = true // 选中状态
-        // console.log(this.$store.phone)
         const listParams = { // store使用
             id,
             type: 1
         }
         this.getInformationListFun(listParams) // action
+    },
+    deactivated() {
+        // 用来解决projectnav的样式问题
+        for (const value of this.items) {
+            value.isColor = false
+        }
     },
     methods: {
         // store

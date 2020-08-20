@@ -24,7 +24,7 @@
                             </div>
                             <div :class="item2.fileLock=='1'?'btn-ul-lock':'btn-ul'">
                                 <div class="btn-li" @click="handleShowImg(item2.qrcodeImageUrl)">
-                                    <!-- <i class="iconfont icon-wendang" v-show= false></i> -->
+                                    <i class="iconfont icon-wendang" ></i>
                                     <div>任务列表</div>
                                 </div>
                                 <div class="btn-li">
@@ -191,7 +191,7 @@ export default {
 
     .content-item {
         border-top: 2px solid rgb(231, 231, 231);
-        border-bottom: 2px solid rgb(231, 231, 231);
+        // border-bottom: 2px solid rgb(231, 231, 231);
         display: flex;
 
         .left {

@@ -1,7 +1,8 @@
 export default {
     path: '/information',
     component: () => import('@/views/information'),
-    name: 'information'
+    name: 'information',
+    meta: { requiresAuth: true }
     // children: [
     //     {
     //         path: 'projectapproval',
