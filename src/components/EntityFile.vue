@@ -1,74 +1,86 @@
 <template>
     <div class="entityfile-tem">
-        <div v-for="(item, index) in items" :key="index" class="hideContent" :ref="'ref'+index">
-            <div class="headerBox" @click="showContent(index)">
+        <div v-for="(item, index) in items" :key="index"  >
+            <!-- class="hideContent" -->
+            <!-- :ref="'ref'+index" -->
+            <div class="headerBox" @click="showContent(index),checkChiFile(item.id,item.panduandedongxi)">
                 <div>{{item.title}}</div>
-                <i class="iconfont icon-xiajiantou"></i>
+                <i class="iconfont" :class="item.ishidden?'icon-xiajiantou':'icon-xiangshang'"></i>
             </div>
-            <div class="item" v-for="(item2, index2) in item.date" :key="index2">
-                <div class="title">{{item2.title}}</div>
-                <div class="content-item">
-                    <div class="left">
-                        <!-- <img :src="item.qrcodeImageUrl" /> -->
-                        <img :src='item2.fileImgSrc' />
-                    </div>
-                    <div class="right">
-                        <div class="filename">{{item2.fileName}}</div>
-                        <div class="content">
-                            <div class="date_name">
-                                <div>{{item2.uploadTime}}</div>
-                                <div>{{item2.uploadPerson}}</div>
+            <!-- 2  -->
+            <template v-if='item.ishidden'>
+                <div class="item" v-for="(item2, index2) in item.date" :key="index2" >
+                    <div class="title">{{item2.title}}</div>
+                    <div class="content-item">
+                        <div class="left">
+                            <!-- <img :src="item.qrcodeImageUrl" /> -->
+                            <img :src='item2.fileImgSrc' />
+                        </div>
+                        <div class="right">
+                            <div class="filename">{{item2.fileName}}</div>
+                            <div class="content">
+                                <div class="date_name">
+                                    <div>{{item2.uploadTime}}</div>
+                                    <div>{{item2.uploadPerson}}</div>
+                                </div>
+                                <div :class="item2.fileLock=='1'?'btn-ul-lock':'btn-ul'">
+                                    <div class="btn-li" @click="handleShowImg(item2.qrcodeImageUrl)">
+                                        <i class="iconfont icon-wendang" ></i>
+                                        <div>任务列表</div>
+                                    </div>
+                                    <div class="btn-li">
+                                        <i class="iconfont icon-wendang"></i>
+                                        <a :href="item2.fileUrl">
+                                            <div>下载</div>
+                                        </a>
+                                    </div>
+                                    <router-link :to="{name:'log',query:{id:item2.id}}" class="btn-li">
+                                        <i class="iconfont icon-wendang"></i>
+                                        <div>日志</div>
+                                    </router-link>
+                                    <div class="btn-li" @click="handleShowReplyItem(index,index2)">
+                                        <i class="iconfont icon-wendang"></i>
+                                        <div>评论</div>
+                                    </div>
+                                    <div class="btn-li" @click="handleLockFile(index,index2,item2.id)">
+                                        <i class="iconfont icon-wendang"></i>
+                                    <div>锁定文件</div>
+                                    </div>
+                                    <!-- 纱布 -->
+                                    <div class="gauze" v-if="item2.fileLock == '1'"> </div>
+                                </div>
                             </div>
-                            <div :class="item2.fileLock=='1'?'btn-ul-lock':'btn-ul'">
-                                <div class="btn-li" @click="handleShowImg(item2.qrcodeImageUrl)">
-                                    <i class="iconfont icon-wendang"></i>
-                                    <div>转移</div>
+                        </div>
+                    </div>
+
+                    <!-- 判断来显示渲染 -->
+                    <div class="file-item" v-if="item2.isShowComment">
+                        <div class="action-btn">
+                            <mt-button @click.native="handleShowReply(item2.id)"  size="normal">评论</mt-button>
+                        </div>
+                        <!-- 3 -->
+                        <div class="file-content file-child" v-for="(item3, index3) in item2.listComment" :key="index3">
+                            <div class="file-left">
+                                <!-- <img src /> -->
+                            </div>
+                            <div class="file-mid">
+                                <div class="mid-top">
+                                    <p>{{item3.commentContent}}</p>
                                 </div>
-                                <div class="btn-li">
-                                    <i class="iconfont icon-wendang"></i>
-                                    <a :href="item2.fileUrl">
-                                        <div>下载</div>
-                                    </a>
+                                <div class="mid-bot">
+                                    <p>{{item3.commentProson}}</p>&nbsp;&nbsp;
+                                    <p style="margin-left: 10px">评论时间：{{item3.commentTime}}</p>
                                 </div>
-                                <router-link :to="{name:'log',query:{id:item2.id}}" class="btn-li">
-                                    <i class="iconfont icon-wendang"></i>
-                                    <div>日志</div>
-                                </router-link>
-                                <div class="btn-li" @click="handleShowReplyItem(index,index2)">
-                                    <i class="iconfont icon-wendang"></i>
-                                    <div>评论</div>
-                                </div>
-                                <div class="btn-li" @click="handleLockFile(index,index2,item2.id)">
-                                    <i class="iconfont icon-wendang"></i>
-                                <div>锁定文件</div>
-                                </div>
-                                  <!-- 纱布 -->
-                                 <div class="gauze" v-if="item2.fileLock == '1'"> </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- 判断来显示渲染 -->
-                <div class="file-item" v-if="item2.isShowComment">
-                    <div class="action-btn">
-                        <mt-button @click.native="handleShowReply(item2.id)"  size="normal">评论</mt-button>
-                    </div>
-                    <div class="file-content file-child" v-for="(item3, index3) in item2.listComment" :key="index3">
-                        <div class="file-left">
-                            <!-- <img src /> -->
-                        </div>
-                        <div class="file-mid">
-                            <div class="mid-top">
-                                <p>{{item3.commentContent}}</p>
-                            </div>
-                            <div class="mid-bot">
-                                <p>{{item3.commentProson}}</p>&nbsp;&nbsp;
-                                <p style="margin-left: 10px">评论时间：{{item3.commentTime}}</p>
-                            </div>
-                        </div>
-                    </div>
+                <!-- 子文件夹 -->
+                <div class="chi-headerBox headerBox"> <!-- 子文件夹方法，显示子文件内容 -->
+                    <div>1111</div>
+                    <i class="iconfont" :class="item.ishidden?'icon-xiajiantou':'icon-xiangshang'"></i>
                 </div>
-            </div>
+            </template>
         </div>
         <Reply :isShow = isShowReply v-on:hideBox = hideBox :id = id />
     </div>
@@ -100,19 +112,16 @@ export default {
             const e = e1 + '.' + e2
             this.$emit('handleShowReplyItem', e)
         },
+        // 折叠
         showContent(index) {
-            // console.log(index)
-            // console.log(this.$refs)
-            const ref = 'ref' + index
-            if (this.$refs[ref][0].className === '') {
-                this.$refs[ref][0].className = 'hideContent'
-                this.$refs[ref][0].firstChild.childNodes[1].className =
-                    'iconfont icon-xiajiantou'
-            } else {
-                this.$refs[ref][0].className = ''
-                this.$refs[ref][0].firstChild.childNodes[1].className =
-                    'iconfont icon-xiangshang'
-            }
+            this.$emit('showContent', index)
+            // 由于是在store写的！！不推荐直接更改state数据
+            console.log(this.$store.state.informationList[index])
+            this.$store.state.informationList[index].ishidden = !this.$store.state.informationList[index].ishidden
+        },
+        // 判断是否有子文件
+        checkChiFile() {
+            // 如果有拿到id什么的再做一次请求
         },
         handleShowReply(e) {
             this.isShowReply = true
@@ -152,8 +161,9 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+
 .headerBox {
-    background: rgba(244, 244, 244, 0.8);
+    background: rgba(211, 244, 244, 0.8);
     color: #000;
     height: 40px;
     width: 100%;
@@ -165,10 +175,12 @@ export default {
         margin-left 10px
     }
 }
-.gauze
-    position absolute
-    width 100%
-    height 100%
+.chi-headerBox
+    width 80%
+    padding-left 50px
+    margin 0 auto
+    font-size 16px
+    background: rgba(244, 244, 244, 0.5);
 .item {
     padding: 0 10px;
 
@@ -182,7 +194,7 @@ export default {
 
     .content-item {
         border-top: 2px solid rgb(231, 231, 231);
-        border-bottom: 2px solid rgb(231, 231, 231);
+        // border-bottom: 2px solid rgb(231, 231, 231);
         display: flex;
 
         .left {
@@ -232,12 +244,16 @@ export default {
                 width: 50%;
                 font-size: 11px;
                 color: gray;
+                overflow-y hidden
                 position relative
+                overflow-y:hidden;
                 .btn-li {
                     flex: 1;
                     display: flex;
                     flex-direction: column;
                     text-align: center;
+                    align-items center
+                    justify-content center
                     &:nth-child(1) {
                         color: red;
                     }

@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import main from './main'
-import information from './information'
-import details from './details'
-import log from './log'
-import uploadFile from './uploadFile'
-import login from './login'
+import main from './modules/main'
+import information from './modules/information'
+import details from './modules/details'
+import log from './modules/log'
+import uploadFile from './modules/uploadFile'
+import login from './modules/login'
 Vue.use(VueRouter)
 // const routes = [
 //     { path: '/', redirect: '/index' },
