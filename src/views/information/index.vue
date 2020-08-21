@@ -8,31 +8,93 @@
             <ProjectNav v-on:getInfo="getInfo" :list="items" />
         </nav>
         <main class="wrap">
-            <!-- 以下分为2种情况 一个是非更多的内容 ,还有一个是更多的内容 -->
-            <EntityFile :items= this.$store.state.informationList v-on:handleShowImg="handleShowImg"
-            v-on:handleShowReplyItem="handleShowReplyItem" v-if='isEntityFile'></EntityFile>
-             <!-- v-on:showContent='showContent' -->
-            <div v-else>
-                <mt-navbar v-model="selected">
-                    <mt-tab-item id="1">发布任务 </mt-tab-item>
-                    <mt-tab-item id="2" >项目星标</mt-tab-item>
-                    <mt-tab-item id="3">项目归档</mt-tab-item>
-                    <mt-tab-item id="4">修改项目名</mt-tab-item>
-                    <mt-tab-item id="5">任务列表</mt-tab-item>
+            <!-- 暂且分为两中一个是分页时候的状态，一个非分页时候的状态 -->
+            <template v-if="nowPosition===0">
+                <!-- 以下分为2种情况 一个是非更多的内容 ,还有一个是更多的内容 -->
+                <EntityFile :items= this.$store.state.informationList v-on:handleShowImg="handleShowImg"
+                v-on:handleShowReplyItem="handleShowReplyItem" v-if='isEntityFile'></EntityFile>
+                <!-- v-on:showContent='showContent' -->
+                <div v-else>
+                    <mt-navbar v-model="selected">
+                        <mt-tab-item id="1">发布任务 </mt-tab-item>
+                        <mt-tab-item id="2" >项目星标</mt-tab-item>
+                        <mt-tab-item id="3">项目归档</mt-tab-item>
+                        <mt-tab-item id="4">修改项目名</mt-tab-item>
+                        <mt-tab-item id="5">任务列表</mt-tab-item>
 
-                </mt-navbar>
-                <!-- <mt-tab-container v-model="selected">
-                <mt-tab-container-item id="1">
-                    我是发布的内容
-                </mt-tab-container-item>
-                <mt-tab-container-item id="2">
-                    {{star}}
-                </mt-tab-container-item>
-                <mt-tab-container-item id="3">
-                    {{file}}
-                </mt-tab-container-item>
-            </mt-tab-container> -->
-            </div>
+                    </mt-navbar>
+                    <!-- <mt-tab-container v-model="selected">
+                    <mt-tab-container-item id="1">
+                        我是发布的内容
+                    </mt-tab-container-item>
+                    <mt-tab-container-item id="2">
+                        {{star}}
+                    </mt-tab-container-item>
+                    <mt-tab-container-item id="3">
+                        {{file}}
+                    </mt-tab-container-item>
+                </mt-tab-container> -->
+                </div>
+            </template>
+            <!-- 分页时候的页面展示 -->
+            <template v-else-if="nowPosition===1">
+                <!-- 排版 先search    再content      再page -->
+                <!-- search -->
+                <!-- <Niusearch
+                v-on:handleSearch='handleSearch'/> -->
+                    <!-- content -->
+                    <div class="content wrap1" >
+                        <div class="item" v-for="(item, index) in searchList" :key="index" >
+                        <div class="title">{{item.title}}</div>
+                        <div class="content-item">
+                            <div class="left">
+                                <!-- <img :src="item.qrcodeImageUrl" /> -->
+                                <img :src='item.fileImgSrc' />
+                            </div>
+                            <div class="right">
+                                <div class="filename">{{item.fileName}}</div>
+                                <div class="content">
+                                    <div class="date_name">
+                                        <div>{{item.uploadTime}}</div>
+                                        <div>{{item.uploadPerson}}</div>
+                                    </div>
+                                    <div :class="item.fileLock=='1'?'btn-ul-lock':'btn-ul'">
+                                        <div class="btn-li" >  <!-- @click="handleShowImg(item.qrcodeImageUrl)"-->
+                                            <i class="iconfont icon-wendang" ></i>
+                                            <div>任务列表</div>
+                                        </div>
+                                        <div class="btn-li">
+                                            <i class="iconfont icon-wendang"></i>
+                                            <a :href="item.fileUrl">
+                                                <div>下载</div>
+                                            </a>
+                                        </div>
+                                        <router-link :to="{name:'log',query:{id:item.id}}" class="btn-li">
+                                            <i class="iconfont icon-wendang"></i>
+                                            <div>日志</div>
+                                        </router-link>
+                                        <div class="btn-li"> <!-- @click="handleLockFile(index,index2,item.id)-->
+                                            <i class="iconfont icon-wendang"></i>
+                                        <div>锁定文件</div>
+                                        </div>
+                                        <!-- 纱布 -->
+                                        <div class="gauze" v-if="item.fileLock == '1'"> </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <!-- <template v-if="searchList.length===0">
+                            <div>请搜索数据 </div>
+                        </template>
+                        <template v-else>
+                            <div>内容</div>
+                        </template> -->
+                    </div>
+                    <!-- page -->
+                    <Niupage :pages='pages' v-on:handleCurrentChange='handleCurrentChange' style="position:absolute; bottom:0;    left: 50%;
+                    transform: translateX(-50%);" />
+            </template>
         </main>
         <footer>
             <router-link tag="div" :to="{name:'uploadFile',query:{id:id,typeId:typeId}}">+</router-link>
@@ -45,6 +107,8 @@
 </template>
 
 <script>
+// import Niusearch from '@/components/common/n-search'
+import Niupage from '@/components/common/n-page'
 import { Toast, MessageBox } from 'mint-ui'
 import ProjectNav from './ProjectNav'
 // import NewAdd from '@/components/NewAdd'
@@ -60,6 +124,7 @@ export default {
             // address: ['electronicsfile1', 'electronicsfile2'],
             ShowImg: false, // 是否二维码显示
             isEntityFile: true, // 是否隐藏entityfile
+            nowPosition: 1, // 当前的位置 0 是分页 1是非分页 2待定
             selected: 0, // 更多内容tab使用
             ImgCode: '', // 二维码的code
             // more 使用
@@ -128,9 +193,15 @@ export default {
             ],
             list: [], // 除了更多内容外的其他7个的显示内容数据 ,已经使用store替代
             cacheList: [], // 缓存使用,已经使用store替代
+            searchList: [], // 搜索出来的数组
             assign: { // 发布任务弹窗的对象
                 isShow: false,
                 params: ''
+            },
+            pages: { // 分页对象
+                currentPage: 1,
+                limit: 10,
+                total: null
             }
         }
     },
@@ -139,7 +210,9 @@ export default {
         // NewAdd,
         EntityFile,
         ShowImg,
-        AssignTask
+        AssignTask,
+        // Niusearch,
+        Niupage
         // ProjectApproval
     },
     mounted() {
@@ -158,21 +231,29 @@ export default {
         console.log(1)
     },
     activated () {
-        console.log(111)
+        // console.log(111)
         const { id } = this.$route.query
         this.id = id
-        this.items[0].isColor = true // 选中状态
-        const listParams = { // store使用
-            id,
-            type: 1
+        const params = {
+            queryInteger: id,
+            pageSize: 10,
+            currentPage: 1
         }
-        this.getInformationListFun(listParams) // action
+        this.$axios.post('http://58.22.125.43:8888/file/findFilesByEsc', params).then((res) => {
+            console.log(res)
+            this.pages.total = res.data.total
+            this.searchList = res.data.rows
+        })
     },
     deactivated() {
         // 用来解决projectnav的样式问题
         for (const value of this.items) {
             value.isColor = false
         }
+        // 不建议直接操作store
+        this.$store.state.informationListCache = []
+        this.$store.state.informationList = []
+        this.nowPosition = 1
     },
     methods: {
         // store
@@ -186,6 +267,7 @@ export default {
         },
         // 内容获取
         getInfo(e) {
+            this.nowPosition = 0
             // 对选中状态时候字变红的处理
             for (let i = 0; i < this.items.length; i++) {
                 this.items[i].isColor = false // 其他状态
@@ -227,12 +309,36 @@ export default {
             this.$store.state.informationList[arr[0]].date[arr[1]].isShowComment = !this.$store.state.informationList[arr[0]].date[arr[1]].isShowComment
             // 截取
             // this.list
-        }
+        },
         // 折叠
         // showContent(e) {
         //     console.log(this.list[e])
-        //     // this.list[e].ishidden = !this.list[e].ishidden
+        //     // this.list[e].ishidden = v!this.list[e].ishidden
         // }
+
+        handleSearch(v) {
+        //     const params = {
+        //         queryInteger: v,
+        //         pageSize: 10,
+        //         currentPage: 1
+        //     }
+        //     this.$axios.post('http://58.22.125.43:8888/file/findFilesByEsc', params).then((res) => {
+        //         console.log(res)
+        //         this.pages.total = res.data.total
+        //     })
+        },
+        handleCurrentChange(e) {
+            const params = {
+                queryInteger: this.id,
+                pageSize: 10,
+                currentPage: e
+            }
+            this.$axios.post('http://58.22.125.43:8888/file/findFilesByEsc', params).then((res) => {
+                console.log(res)
+                // this.pages.total = res.data.total
+                this.searchList = res.data.rows
+            })
+        }
     },
     watch: {
         // 监听selected
@@ -309,6 +415,17 @@ export default {
     overflow: auto;
     border-bottom: 4px solid #e7e7e7;
 }
+.wrap1 {
+    position: absolute;
+    width 100%
+    overflow hiddend
+    left: 0;
+    right: 0;
+    // top: 234px;
+    bottom: 36px;
+    overflow: auto;
+    border-bottom: 4px solid #e7e7e7;
+}
 
 footer {
     height: 40px;
@@ -339,4 +456,115 @@ footer {
     .mint-tab-item
         border 1px solid #e7e7e7
         box-shadow 0 0 2px #000
+.content
+    height calc(100% - 36px)
+.item {
+    padding: 0 10px;
+
+    // border-bottom: 2px solid rgb(231, 231, 231);
+    .title {
+        // padding: 5px 0;
+        // font-size: 12px;
+        // color: gray;
+        // font-weight: bold;
+    }
+
+    .content-item {
+        border-top: 2px solid rgb(231, 231, 231);
+        // border-bottom: 2px solid rgb(231, 231, 231);
+        display: flex;
+
+        .left {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50px;
+            img {
+                height: 40px;
+                width: 40px;
+            }
+        }
+
+        .right {
+            flex: 6;
+            display: flex;
+            height: 50px;
+            flex-direction: column;
+            color: gray;
+            font-size: 14px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+
+            .filename {
+                font-size: 12px;
+            }
+
+            .content {
+                flex: 1;
+                flex-direction: row;
+                display: flex;
+            }
+
+            .date_name {
+                flex: 1;
+                display: flex;
+                width: 50%;
+                flex-direction: column;
+                font-size: 12px;
+            }
+
+            .btn-ul {
+                flex: 1;
+                display: flex;
+                width: 50%;
+                font-size: 11px;
+                color: gray;
+                overflow-y hidden
+                position relative
+                overflow-y:hidden;
+                .btn-li {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    text-align: center;
+                    align-items center
+                    justify-content center
+                    &:nth-child(1) {
+                        color: red;
+                    }
+
+                    &:nth-child(2) {
+                        color: green;
+                    }
+
+                    &:nth-child(3) {
+                        color: blue;
+                    }
+
+                    &:nth-child(4) {
+                        color: teal;
+                    }
+                }
+            }
+// lock
+            .btn-ul-lock {
+                flex: 1;
+                display: flex;
+                width: 50%;
+                font-size: 11px;
+                color: gray;
+                position relative
+                .btn-li {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    text-align: center;
+                }
+            }
+        }
+    }
+}
+
 </style>
