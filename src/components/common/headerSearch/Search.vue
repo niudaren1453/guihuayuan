@@ -8,7 +8,7 @@
             <div class="search-shadow" @click.self="handleCloseSearch">
             <div class="search-box">
                 <mt-field  placeholder="请输入搜索标题" v-model="nowSearchValue">
-                    <mt-button type="primary" size="small" @click.native='handleSearch'>搜索</mt-button>
+                    <mt-button type="primary" size="small" @click.native='handleSearch1'>搜索</mt-button>
                 </mt-field>
             </div>
         </div>
@@ -122,6 +122,7 @@ export default {
         isShowSearch: Boolean,
         searchValue: String,
         list: Array,
+        oldSearchValue: String,
         state: { // 判断左边显示啥
             type: [Number, String],
             default: 1
@@ -139,14 +140,18 @@ export default {
         back () {
             this.$emit('back')
         },
-        handleSearch () {
-            this.$emit('handleSearch', this.nowSearchValue)
+        handleSearch1 () {
+            // console.log(this.oldSearchValue)
+            // this.oldSearchValue = this.nowSearchValue
+            this.$emit('handleSearch1', this.nowSearchValue)
         },
         handleCurrentChange(e) {
             // console.log(e)
+            // this.oldSearchValue = this.nowSearchValue
+            console.log(e + 'ss')
             const obj = {
                 pagenum: e,
-                searchValue: this.nowSearchValue
+                searchValue: this.oldSearchValue
             }
             // console.log(111)
             this.$emit('handleCurrentChange', obj)

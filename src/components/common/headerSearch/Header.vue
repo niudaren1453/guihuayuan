@@ -20,8 +20,8 @@
                 </div>
             </div>
         <!-- search -->
-        <Search :isShowSearch='isShowSearch' :searchValue='searchValue' v-on:back='back'
-        :list='list' v-on:handleSearch='handleSearch'
+        <Search :isShowSearch='isShowSearch' :oldSearchValue='searchValue' v-on:back='back'
+        :list='list' v-on:handleSearch1='handleSearch1'
          v-on:handleCurrentChange="handleCurrentChange" :pages = 'pages'
          :state='state' />
     </header>
@@ -37,6 +37,7 @@ export default {
             isShowSearchBox: false,
             isShowSearch: false,
             list: [], // 查询结果
+            newList: [],
             pages: { // 分页
                 currentPage: 1,
                 limit: 10,
@@ -61,14 +62,15 @@ export default {
             this.isShowSearchBox = true
         },
         // 点击搜索
-        handleSearch (e) {
+        handleSearch (v) {
             // console.log(typeof e)
             // 判断e是否是string类型来做获取数据
-            if (typeof e === 'string') {
-                this.search(e)
-            } else {
-                this.search(this.searchValue)
-            }
+            // this.searchValue = v
+            this.search(this.searchValue)
+        },
+        handleSearch1(e) {
+            this.searchValue = e
+            this.search(this.searchValue)
         },
         handleCurrentChange(o) {
             this.search(o.searchValue, o.pagenum)
@@ -93,15 +95,17 @@ export default {
             if (v !== '') {
                 this.isShowSearch = true
                 const params = {
-                    currentPage: 1 | p,
+                    currentPage: p || 1,
                     pageSize: '10',
                     queryString: v,
                     queryInteger: this.id
                 }
                 // 判断state区别查的是啥
+                console.log(params)
                 if (this.state === 1 || this.state === '1') {
                     this.$axios.post('http://58.22.125.43:8888/project/findBycondition', params).then(res => {
-                        // console.log(res)
+                        console.log(res.data.rows)
+                        console.log(res.data.total)
                         // console.log(111)
                         this.list = res.data.rows
                         this.isShowSearchBox = false
@@ -117,6 +121,7 @@ export default {
                     })
                 }
             } else {
+                // console.log(p)
                 Toast('搜索不能为空')
             }
         }
