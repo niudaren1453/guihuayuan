@@ -1,8 +1,6 @@
 <template>
     <div class="Infomation">
-        <mt-header title="项目">
-            <mt-button icon="back" slot="left" @click="back"></mt-button>
-        </mt-header>
+        <Header title='项目' state= 2 />
         <!-- <NewAdd></NewAdd> -->
         <nav>
             <ProjectNav v-on:getInfo="getInfo" :list="items" />
@@ -45,8 +43,13 @@
                     <!-- content -->
                     <div class="content wrap1" >
                         <div class="item" v-for="(item, index) in searchList" :key="index" >
+<<<<<<< HEAD
                         <div class="title">{{item.title}}</div>
                         <div class="content-item">
+=======
+                            <div class="title">{{item.title}}</div>
+                            <div class="content-item">
+>>>>>>> modifyInfo
                             <div class="left">
                                 <!-- <img :src="item.qrcodeImageUrl" /> -->
                                 <img :src='item.fileImgSrc' />
@@ -107,6 +110,10 @@
 </template>
 
 <script>
+<<<<<<< HEAD
+=======
+import Header from '@/components/common/headerSearch/Header'
+>>>>>>> modifyInfo
 // import Niusearch from '@/components/common/n-search'
 import Niupage from '@/components/common/n-page'
 import { Toast, MessageBox } from 'mint-ui'
@@ -212,7 +219,12 @@ export default {
         ShowImg,
         AssignTask,
         // Niusearch,
+<<<<<<< HEAD
         Niupage
+=======
+        Niupage,
+        Header
+>>>>>>> modifyInfo
         // ProjectApproval
     },
     mounted() {
@@ -259,11 +271,6 @@ export default {
         // store
         getInformationListFun(list) {
             this.$store.dispatch('getInformationListFun', list)
-        },
-        // router
-        // 路由返回《
-        back() {
-            this.$router.go(-1)
         },
         // 内容获取
         getInfo(e) {

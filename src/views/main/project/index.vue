@@ -30,7 +30,7 @@
     </div>
 </template>
 <script>
-import Header from '../components/Header'
+import Header from '@/components/common/headerSearch/Header'
 export default {
     data() {
         return {

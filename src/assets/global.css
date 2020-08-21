@@ -17,3 +17,9 @@ body,html{
     overflow:hidden;
     position:relative;
 }
+
+.gauze{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}

@@ -114,13 +114,17 @@ export default {
         },
         // 折叠
         showContent(index) {
+<<<<<<< HEAD
             // console.log(index)
             // console.log(this.$refs)
             // 待完善
+=======
+>>>>>>> modifyInfo
             this.$emit('showContent', index)
             // 由于是在store写的！！不推荐直接更改state数据
             console.log(this.$store.state.informationList[index])
             this.$store.state.informationList[index].ishidden = !this.$store.state.informationList[index].ishidden
+<<<<<<< HEAD
             // const ref = 'ref' + index
             // if (this.$refs[ref][0].className === '') {
             //     this.$refs[ref][0].className = 'hideContent'
@@ -131,6 +135,8 @@ export default {
             //     this.$refs[ref][0].firstChild.childNodes[1].className =
             //         'iconfont icon-xiangshang'
             // }
+=======
+>>>>>>> modifyInfo
         },
         // 判断是否有子文件
         checkChiFile() {
@@ -194,10 +200,13 @@ export default {
     margin 0 auto
     font-size 16px
     background: rgba(244, 244, 244, 0.5);
+<<<<<<< HEAD
 .gauze
     position absolute
     width 100%
     height 100%
+=======
+>>>>>>> modifyInfo
 .item {
     padding: 0 10px;
 
