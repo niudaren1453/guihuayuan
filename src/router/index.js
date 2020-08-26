@@ -6,6 +6,7 @@ import details from './modules/details'
 import log from './modules/log'
 import uploadFile from './modules/uploadFile'
 import login from './modules/login'
+import task from './modules/task'
 Vue.use(VueRouter)
 // const routes = [
 //     { path: '/', redirect: '/index' },
@@ -119,6 +120,7 @@ const router = new VueRouter({
         log,
         uploadFile,
         login,
+        task,
         {
             path: '/*',
             redirect: '/index' // 可以考虑做个404 页面

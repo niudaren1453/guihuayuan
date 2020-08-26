@@ -12,6 +12,7 @@
 <script>
 import Fileupload from '@/components/Fileupload'
 export default {
+    name: 'uploadFile',
     data () {
         return {
         }

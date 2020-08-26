@@ -1,5 +1,5 @@
 <template>
-    <section class="log">
+    <section class="task">
         <mt-header title='项目'>
             <mt-button icon="back" slot="left" @click="back"></mt-button>
     </mt-header>
@@ -8,9 +8,9 @@
 </template>
 
 <script>
-import Log from './components/Log.vue'
+import Log from './components/Task.vue'
 export default {
-    name: 'log',
+    name: 'task',
     data() {
         return {
             list: []
@@ -19,7 +19,7 @@ export default {
     mounted() {
         const { id } = this.$route.query
         this.id = id
-        this.$axios.get('http://58.22.125.43:8888/log/findLogs/' + id).then(res => {
+        this.$axios.get('http://58.22.125.43:8888/task/findFilesTask/' + id).then(res => {
             console.log(res.data)
             this.list = res.data
         })

@@ -24,17 +24,18 @@
                                     <div>{{item2.uploadPerson}}</div>
                                 </div>
                                 <div :class="item2.fileLock=='1'?'btn-ul-lock':'btn-ul'">
-                                    <div class="btn-li" @click="handleShowImg(item2.qrcodeImageUrl)">
+                                    <!--  @click="handleShowImg(item2.qrcodeImageUrl)" ↓ -->
+                                    <router-link tag="div" :to="{name:'task',query:{id:item2.id}}" class="btn-li" >
                                         <i class="iconfont icon-wendang" ></i>
                                         <div>任务列表</div>
-                                    </div>
+                                    </router-link>
                                     <div class="btn-li">
                                         <i class="iconfont icon-wendang"></i>
                                         <a :href="item2.fileUrl">
                                             <div>下载</div>
                                         </a>
                                     </div>
-                                    <router-link :to="{name:'log',query:{id:item2.id}}" class="btn-li">
+                                    <router-link tag="div" :to="{name:'log',query:{id:item2.id}}" class="btn-li">
                                         <i class="iconfont icon-wendang"></i>
                                         <div>日志</div>
                                     </router-link>
@@ -44,7 +45,7 @@
                                     </div>
                                     <div class="btn-li" @click="handleLockFile(index,index2,item2.id)">
                                         <i class="iconfont icon-wendang"></i>
-                                    <div>锁定文件</div>
+                                        <div>锁定文件</div>
                                     </div>
                                     <!-- 纱布 -->
                                     <div class="gauze" v-if="item2.fileLock == '1'"> </div>
@@ -93,7 +94,7 @@ import { Toast, MessageBox } from 'mint-ui'
 export default {
     data() {
         return {
-            id: 0, // 传给组件show/Reply的id
+            id: 0, // 传给组件show/Reply 的id
             isShowReply: false
         }
     },
@@ -104,9 +105,14 @@ export default {
         Reply
     },
     methods: {
-        handleShowImg(e) {
-            this.$emit('handleShowImg', e)
-        },
+        /* 2020/8/24
+            niu
+            客户需求更改 固作废
+        */
+        // 二维码
+        // handleShowImg(e) {
+        //     this.$emit('handleShowImg', e)
+        // },
         handleShowReplyItem(e1, e2) {
             // 两个祖先级的索引
             const e = e1 + '.' + e2
@@ -123,9 +129,9 @@ export default {
         checkChiFile() {
             // 如果有拿到id什么的再做一次请求
         },
+        // 评论
         handleShowReply(e) {
             this.isShowReply = true
-            // 后期考虑使用vuex来得id
             this.id = e
         },
         hideBox(e) {

@@ -63,10 +63,11 @@
                                         <div>{{item.uploadPerson}}</div>
                                     </div>
                                     <div :class="item.fileLock=='1'?'btn-ul-lock':'btn-ul'">
-                                        <div class="btn-li" >  <!-- @click="handleShowImg(item.qrcodeImageUrl)"-->
-                                            <i class="iconfont icon-wendang" ></i>
+                                        <router-link tag='div' :to="{name:'task',query:{id:item.id}}" class="btn-li" >
+                                            <!-- @click="handleShowImg(item.qrcodeImageUrl)"-->
+                                            <i class="iconfont icon-wendang"  ></i>
                                             <div>任务列表</div>
-                                        </div>
+                                        </router-link>
                                         <div class="btn-li">
                                             <i class="iconfont icon-wendang"></i>
                                             <a :href="item.fileUrl">
@@ -77,16 +78,42 @@
                                             <i class="iconfont icon-wendang"></i>
                                             <div>日志</div>
                                         </router-link>
-                                        <div class="btn-li"> <!-- @click="handleLockFile(index,index2,item.id)-->
+                                        <div class="btn-li" @click="handleShowCommit(index)">
                                             <i class="iconfont icon-wendang"></i>
-                                        <div>锁定文件</div>
+                                            <div>评论</div>
+                                        </div>
+                                        <div class="btn-li" @click="handleLockFile(index,item.id)"> <!-- @click="handleLockFile(index,index2,item.id)-->
+                                            <i class="iconfont icon-wendang"></i>
+                                            <div>锁定文件</div>
                                         </div>
                                         <!-- 纱布 -->
                                         <div class="gauze" v-if="item.fileLock == '1'"> </div>
                                     </div>
                                 </div>
+                            </div>
                         </div>
-                    </div>
+                        <!-- 评论展示 -->
+                        <div class="file-item" v-if="item.ishiddencomment">
+                            <div class="action-btn">
+                                <mt-button @click.native="handleShowReply(item.id)"  size="normal">评论</mt-button>
+                            </div>
+                            <!-- 3 -->
+                            <div class="file-content file-child" v-for="(item2, index2) in item.listComment" :key="index2">
+                                <div class="file-left">
+                                    <!-- <img src /> -->
+                                </div>
+                                <div class="file-mid">
+                                    <div class="mid-top">
+                                        <p>{{item2.commentContent}}</p>
+                                    </div>
+                                    <div class="mid-bot">
+                                        <p>{{item2.commentProson}}</p>&nbsp;&nbsp;
+                                        <p style="margin-left: 10px">评论时间：{{item2.commentTime}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--  -->
                     </div>
                 </template>
                 <template v-else>
@@ -107,15 +134,21 @@
                  <!-- @current-change="handleCurrentChange" -->
             </el-pagination>
         </div>
+        <!-- r -->
+        <Reply :isShow = isShowReply v-on:hideBox = hideBox :id = fileId />
+
  </div>
 </template>
 
 <script>
+import Reply from '@/components/show/Reply' // 评论弹窗
 export default {
     data () {
         return {
             // isContent: false, // 暂且无用
-            nowSearchValue: ''
+            nowSearchValue: '',
+            fileId: 0, // 文件id  评论使用
+            isShowReply: false
         }
     },
     props: {
@@ -134,7 +167,7 @@ export default {
         // console.log(this.pages)
     },
     components: {
-
+        Reply
     },
     methods: {
         back () {
@@ -155,6 +188,25 @@ export default {
             }
             // console.log(111)
             this.$emit('handleCurrentChange', obj)
+        },
+        // 锁定文件
+        handleLockFile(index, id) {
+            const obj = { index, id }
+            this.$emit('handleLockFile', obj)
+        },
+        handleShowCommit(e) {
+            // this.isShowReply = true
+            // this.fileId = v
+            this.list[e].ishiddencomment = !this.list[e].ishiddencomment
+        },
+        // 弹窗评论隐藏组件
+        hideBox(e) {
+            this.isShowReply = false
+        },
+        //
+        handleShowReply(v) {
+            this.isShowReply = true
+            this.fileId = v
         }
     }
 }
@@ -348,6 +400,120 @@ ul
                     flex-direction: column;
                     text-align: center;
                 }
+            }
+        }
+    }
+}
+
+// 子评论内容
+.file-item {
+    // position relative
+    width: 100%;
+    // border-bottom 4px solid rgb(231, 231, 231)
+    .action-btn {
+        display flex
+        justify-content flex-end
+    }
+    .file-type {
+        position: absolute;
+        right: 35px;
+        color: #fff;
+        font-size: 13px;
+        transform: translateY(-100%);
+
+        p {
+            background: $color;
+            text-align: center;
+            padding: 0 8px;
+        }
+    }
+
+    .file-content {
+        // margin-top 15px
+        display: flex;
+        height: 50px;
+
+        .file-left {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            img {
+                width: 35px;
+                height: 35px;
+                border-radius: 50%;
+            }
+        }
+
+        .file-mid {
+            flex: 4;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+
+            .mid-top {
+                flex: 1;
+                width: 100%;
+                font-size: 15px;
+                p {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+
+            .mid-bot {
+                flex: 1;
+                display: flex;
+                font-size: 12px;
+                color: gray;
+                overflow: hidden;
+                // justify-content: space-around;
+            }
+        }
+
+        .file-right {
+            flex: 1;
+            position: relative;
+
+            p {
+                width: 40px;
+                background: $color;
+                color: #ffffff;
+                position: absolute;
+                right: 20px;
+                bottom: 10px;
+                text-align: center;
+                font-size: 12px;
+            }
+        }
+    }
+
+    .file-child {
+        border-top  1px solid rgb(231, 231, 231)
+        .file-left {
+            // flex: 3;
+            flex: 1;
+            justify-content: flex-end;
+            margin-right: 10px;
+        }
+
+        .file-mid {
+            // flex: 9;
+            flex: 20;
+        }
+
+        .file-right {
+            flex: 2;
+            display: flex;
+            justify-content: center;
+            align-items:flex-start;
+            div {
+                margin-top 2px
+                color: #fff;
+                background: #00baad;
+                padding: 2px 5px;
             }
         }
     }

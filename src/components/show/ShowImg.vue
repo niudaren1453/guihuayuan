@@ -1,4 +1,5 @@
 <template>
+<!-- 作废了哎 -->
     <div class="ShowImg" v-if="ShowImg" @click="handleHideImg">
         <img :src="ImgCode" />
     </div>

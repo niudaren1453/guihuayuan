@@ -23,13 +23,13 @@
         <Search :isShowSearch='isShowSearch' :oldSearchValue='searchValue' v-on:back='back'
         :list='list' v-on:handleSearch1='handleSearch1'
          v-on:handleCurrentChange="handleCurrentChange" :pages = 'pages'
-         :state='state' />
+         :state='state' v-on:handleLockFile="handleLockFile"/>
     </header>
 </template>
 
 <script>
 import Search from './Search'
-import { Toast } from 'mint-ui'
+import { Toast, MessageBox } from 'mint-ui'
 export default {
     data() {
         return {
@@ -86,7 +86,7 @@ export default {
         router_back() {
             this.$router.go(-1)
         },
-        // -----------------------------
+        // 查询-----------------------------
         search(v, p) {
             if (this.$route.query) {
                 const { id } = this.$route.query
@@ -124,6 +124,29 @@ export default {
                 // console.log(p)
                 Toast('搜索不能为空')
             }
+        },
+        // 锁定文件
+        handleLockFile(o) {
+            console.log(o)
+            MessageBox({
+                title: '提示',
+                message: '确定执行此操作?',
+                showCancelButton: true
+            }).then(action => {
+                if (action === 'confirm') {
+                    this.$axios('http://58.22.125.43:8888/file/fileLock/' + o.id).then((res) => {
+                        console.log(res)
+                        if (res.data.flag === true) {
+                            Toast(res.data.message)
+                            // 更改当前选定的变色
+                            this.list[o.Searchindex].fileLock = 1
+                        } else {
+                            Toast('文件锁定失败')
+                        }
+                        // 根据返回的东西进行判断是否锁定文件成功
+                    })
+                }
+            })
         }
     }
 }
@@ -132,7 +155,7 @@ export default {
 <style lang="stylus" scoped>
 .mint-header
     border-bottom 1px solid rgb(226, 226, 226)
-    background #008080
+    background #00bbd3
 .mint-tabbar
     background-color rgba(255, 255, 255, 0.6)
 .search-shadow

@@ -9,8 +9,9 @@
             <!-- 暂且分为两中一个是分页时候的状态，一个非分页时候的状态 -->
             <template v-if="nowPosition===0">
                 <!-- 以下分为2种情况 一个是非更多的内容 ,还有一个是更多的内容 -->
-                <EntityFile :items= this.$store.state.informationList v-on:handleShowImg="handleShowImg"
-                v-on:handleShowReplyItem="handleShowReplyItem" v-if='isEntityFile'></EntityFile>
+                <!-- v-on:handleShowImg="handleShowImg" -->
+                <EntityFile :items= this.$store.state.informationList v-on:handleShowReplyItem="handleShowReplyItem"
+                 v-if='isEntityFile'></EntityFile>
                 <!-- v-on:showContent='showContent' -->
                 <div v-else>
                     <mt-navbar v-model="selected">
@@ -45,43 +46,69 @@
                         <div class="item" v-for="(item, index) in searchList" :key="index" >
                             <div class="title">{{item.title}}</div>
                             <div class="content-item">
-                            <div class="left">
-                                <!-- <img :src="item.qrcodeImageUrl" /> -->
-                                <img :src='item.fileImgSrc' />
-                            </div>
-                            <div class="right">
-                                <div class="filename">{{item.fileName}}</div>
-                                <div class="content">
-                                    <div class="date_name">
-                                        <div>{{item.uploadTime}}</div>
-                                        <div>{{item.uploadPerson}}</div>
-                                    </div>
-                                    <div :class="item.fileLock=='1'?'btn-ul-lock':'btn-ul'">
-                                        <div class="btn-li" >  <!-- @click="handleShowImg(item.qrcodeImageUrl)"-->
+                                <div class="left">
+                                    <!-- <img :src="item.qrcodeImageUrl" /> -->
+                                    <img :src='item.fileImgSrc' />
+                                </div>
+                                <div class="right">
+                                    <div class="filename">{{item.fileName}}</div>
+                                    <div class="content">
+                                        <div class="date_name">
+                                            <div>{{item.uploadTime}}</div>
+                                            <div>{{item.uploadPerson}}</div>
+                                        </div>
+                                        <div :class="item.fileLock=='1'?'btn-ul-lock':'btn-ul'">
+                                    <router-link tag="div" :to="{name:'task',query:{id:item.id}}" class="btn-li" >
                                             <i class="iconfont icon-wendang" ></i>
                                             <div>任务列表</div>
-                                        </div>
-                                        <div class="btn-li">
-                                            <i class="iconfont icon-wendang"></i>
-                                            <a :href="item.fileUrl">
-                                                <div>下载</div>
-                                            </a>
-                                        </div>
-                                        <router-link :to="{name:'log',query:{id:item.id}}" class="btn-li">
-                                            <i class="iconfont icon-wendang"></i>
-                                            <div>日志</div>
                                         </router-link>
-                                        <div class="btn-li"> <!-- @click="handleLockFile(index,index2,item.id)-->
-                                            <i class="iconfont icon-wendang"></i>
-                                        <div>锁定文件</div>
+                                            <div class="btn-li">
+                                                <i class="iconfont icon-wendang"></i>
+                                                <a :href="item.fileUrl">
+                                                    <div>下载</div>
+                                                </a>
+                                            </div>
+                                            <router-link :to="{name:'log',query:{id:item.id}}" class="btn-li">
+                                                <i class="iconfont icon-wendang"></i>
+                                                <div>日志</div>
+                                            </router-link>
+                                            <div class="btn-li" @click="handleShowPageCommit(index)">
+                                                <i class="iconfont icon-wendang"></i>
+                                                <div>评论</div>
+                                            </div>
+                                            <div class="btn-li" @click="handleLockFile(index,item.id)"> <!-- @click="handleLockFile(index,index2,item.id)-->
+                                                <i class="iconfont icon-wendang"></i>
+                                            <div>锁定文件</div>
+                                            </div>
+                                            <!-- 纱布 -->
+                                            <div class="gauze" v-if="item.fileLock == '1'"> </div>
                                         </div>
-                                        <!-- 纱布 -->
-                                        <div class="gauze" v-if="item.fileLock == '1'"> </div>
+                                    </div>
+                                </div>
+                        </div>
+                        <!-- 评论显示 -->
+                        <div class="file-item" v-if="item.ishiddencomment">
+                            <div class="action-btn">
+                                <mt-button @click.native="handleShowPageReply(item.id)"  size="normal">评论</mt-button>
+                            </div>
+                            <!-- 3 -->
+                            <div class="file-content file-child" v-for="(item2, index2) in item.listComment" :key="index2">
+                                <div class="file-left">
+                                    <!-- <img src /> -->
+                                </div>
+                                <div class="file-mid">
+                                    <div class="mid-top">
+                                        <p>{{item2.commentContent}}</p>
+                                    </div>
+                                    <div class="mid-bot">
+                                        <p>{{item2.commentProson}}</p>&nbsp;&nbsp;
+                                        <p style="margin-left: 10px">评论时间：{{item2.commentTime}}</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                        <Reply :isShow = isShowReply v-on:hideBox = hideBox :id = fileId />
                         <!-- <template v-if="searchList.length===0">
                             <div>请搜索数据 </div>
                         </template>
@@ -98,37 +125,40 @@
             <router-link tag="div" :to="{name:'uploadFile',query:{id:id,typeId:typeId}}">+</router-link>
         </footer>
         <!-- 用来显示二维码的组件 -->
-        <ShowImg :ShowImg="ShowImg" :ImgCode="ImgCode" v-on:handleHideImg="handleHideImg" />
+        <!-- <ShowImg :ShowImg="ShowImg" :ImgCode="ImgCode" v-on:handleHideImg="handleHideImg" /> -->
         <!-- 发布任务组件 -->
         <AssignTask v-if='assign.isShow'> </AssignTask>
     </div>
 </template>
 
 <script>
-import Header from '@/components/common/headerSearch/Header'
+import Header from '@/components/common/headerSearch/Header' // 头
 // import Niusearch from '@/components/common/n-search'
-import Niupage from '@/components/common/n-page'
-import { Toast, MessageBox } from 'mint-ui'
-import ProjectNav from './ProjectNav'
+import Niupage from '@/components/common/n-page' // 分页
+import { Toast, MessageBox } from 'mint-ui' // mintui
+import ProjectNav from './components/ProjectNav' // 8个模块的nav
 // import NewAdd from '@/components/NewAdd'
-import EntityFile from '@/components/EntityFile'
-import ShowImg from '@/components/show/ShowImg'
+import EntityFile from '@/components/EntityFile' // 7个模块的内容组件
+// import ShowImg from '@/components/show/ShowImg'
 // import ProjectApproval from '../components/ProjectApproval'
-import AssignTask from './components/AssignTask'
+import AssignTask from './components/AssignTask' // 发布任务
+import Reply from '@/components/show/Reply' // 评论弹窗
 export default {
     data() {
         return {
             id: 1, // id
+            fileId: 0, // 文件id 给分页的时候使用
             typeId: 1, // 当前类型id    未使用
             // address: ['electronicsfile1', 'electronicsfile2'],
             ShowImg: false, // 是否二维码显示
             isEntityFile: true, // 是否隐藏entityfile
+            isShowReply: false, // 是否显示评论弹窗
             nowPosition: 1, // 当前的位置 0 是分页 1是非分页 2待定
             selected: 0, // 更多内容tab使用
-            ImgCode: '', // 二维码的code
+            // ImgCode: '', // 二维码的code
             // more 使用
-            file: '', // 归档字符
-            star: '', // 星标字符
+            // file: '', // 归档字符
+            // star: '', // 星标字符
             // -----------
             items: [ // projectNav的数组
                 {
@@ -190,9 +220,9 @@ export default {
                     isColor: false
                 }
             ],
-            list: [], // 除了更多内容外的其他7个的显示内容数据 ,已经使用store替代
-            cacheList: [], // 缓存使用,已经使用store替代
-            searchList: [], // 搜索出来的数组
+            // list: [], // 除了更多内容外的其他7个的显示内容数据 ,已经使用store替代
+            // cacheList: [], // 缓存使用,已经使用store替代
+            searchList: [], // 搜索出来的数组(如今没有搜索了，固！随机应变)
             assign: { // 发布任务弹窗的对象
                 isShow: false,
                 params: ''
@@ -208,11 +238,12 @@ export default {
         ProjectNav,
         // NewAdd,
         EntityFile,
-        ShowImg,
+        // ShowImg,
         AssignTask,
         // Niusearch,
         Niupage,
-        Header
+        Header,
+        Reply
         // ProjectApproval
     },
     mounted() {
@@ -255,6 +286,7 @@ export default {
         this.$store.state.informationList = []
         this.nowPosition = 1
     },
+    // --------------------------------------------------------
     methods: {
         // store
         getInformationListFun(list) {
@@ -285,12 +317,16 @@ export default {
                 }
             }
         },
+        /*  2020/8/24
+            niu
+            客户需求更改，说是不用二维码
+        */
         // 展示二维码
-        handleShowImg(e) {
-            // e是动态的,e是接口返回的数据
-            this.ImgCode = e
-            this.ShowImg = true
-        },
+        // handleShowImg(e) {
+        //     // e是动态的,e是接口返回的数据
+        //     this.ImgCode = e
+        //     this.ShowImg = true
+        // },
         // 隐藏二维码
         handleHideImg(e) {
             console.log(11)
@@ -311,7 +347,8 @@ export default {
         //     // this.list[e].ishidden = v!this.list[e].ishidden
         // }
 
-        handleSearch(v) {
+        // 搜索的方法（废弃）
+        // handleSearch(v) {
         //     const params = {
         //         queryInteger: v,
         //         pageSize: 10,
@@ -321,7 +358,7 @@ export default {
         //         console.log(res)
         //         this.pages.total = res.data.total
         //     })
-        },
+        // },
         handleCurrentChange(e) {
             const params = {
                 queryInteger: this.id,
@@ -333,8 +370,53 @@ export default {
                 // this.pages.total = res.data.total
                 this.searchList = res.data.rows
             })
+        },
+        // -------------------------------------------------待考虑组件中
+        // 锁定文件提示
+        handleLockFile(index, e) {
+            console.log(index)
+            console.log(e)
+            console.log(this.searchList)
+            MessageBox({
+                title: '提示',
+                message: '确定执行此操作?',
+                showCancelButton: true
+            }).then(action => {
+                if (action === 'confirm') {
+                    this.$axios('http://58.22.125.43:8888/file/fileLock/' + e).then((res) => {
+                        console.log(res)
+                        if (res.data.flag === true) {
+                            this.searchList[index].fileLock = 1
+                            Toast(res.data.message)
+                            // 更改当前选定的变色
+                        } else {
+                            Toast('文件锁定失败')
+                        }
+                        // 根据返回的东西进行判断是否锁定文件成功
+                    })
+                }
+            })
+        },
+        // 分页的评论展示
+        handleShowPageCommit(e) {
+            // console.log(1)
+            // console.log(e)
+            console.log(this.searchList[e].ishiddencomment)
+            // this.searchList[e].ishiddencomment = !this.searchList[e].ishiddencomment
+            this.searchList[e].ishiddencomment = !this.searchList[e].ishiddencomment
+            // if(this.searchList[e])
+        },
+        handleShowPageReply(v) {
+            this.isShowReply = true
+            this.fileId = v
+        },
+        // 弹窗评论隐藏组件
+        hideBox(e) {
+            this.isShowReply = false
         }
+        // ---------------------------------------------------------------
     },
+
     watch: {
         // 监听selected
         selected() {
@@ -381,7 +463,7 @@ export default {
                                 Toast(res.data.message)
                                 setTimeout(() => {
                                     this.$router.go(0)
-                                }, 2000)
+                                }, 1500)
                             }
                         )
                     } else {
@@ -557,6 +639,119 @@ footer {
                     flex-direction: column;
                     text-align: center;
                 }
+            }
+        }
+    }
+}
+// 子评论内容
+.file-item {
+    // position relative
+    width: 100%;
+    // border-bottom 4px solid rgb(231, 231, 231)
+    .action-btn {
+        display flex
+        justify-content flex-end
+    }
+    .file-type {
+        position: absolute;
+        right: 35px;
+        color: #fff;
+        font-size: 13px;
+        transform: translateY(-100%);
+
+        p {
+            background: $color;
+            text-align: center;
+            padding: 0 8px;
+        }
+    }
+
+    .file-content {
+        // margin-top 15px
+        display: flex;
+        height: 50px;
+
+        .file-left {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            img {
+                width: 35px;
+                height: 35px;
+                border-radius: 50%;
+            }
+        }
+
+        .file-mid {
+            flex: 4;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+
+            .mid-top {
+                flex: 1;
+                width: 100%;
+                font-size: 15px;
+                p {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+
+            .mid-bot {
+                flex: 1;
+                display: flex;
+                font-size: 12px;
+                color: gray;
+                overflow: hidden;
+                // justify-content: space-around;
+            }
+        }
+
+        .file-right {
+            flex: 1;
+            position: relative;
+
+            p {
+                width: 40px;
+                background: $color;
+                color: #ffffff;
+                position: absolute;
+                right: 20px;
+                bottom: 10px;
+                text-align: center;
+                font-size: 12px;
+            }
+        }
+    }
+
+    .file-child {
+        border-top  1px solid rgb(231, 231, 231)
+        .file-left {
+            // flex: 3;
+            flex: 1;
+            justify-content: flex-end;
+            margin-right: 10px;
+        }
+
+        .file-mid {
+            // flex: 9;
+            flex: 20;
+        }
+
+        .file-right {
+            flex: 2;
+            display: flex;
+            justify-content: center;
+            align-items:flex-start;
+            div {
+                margin-top 2px
+                color: #fff;
+                background: #00baad;
+                padding: 2px 5px;
             }
         }
     }

@@ -25,6 +25,7 @@
 <script>
 import { Toast } from 'mint-ui'
 export default {
+    name: 'login',
     data() {
         return {
             codeText: '获取验证码', // 获取验证码按钮的文本内容
