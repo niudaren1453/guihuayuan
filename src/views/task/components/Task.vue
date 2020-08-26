@@ -1,5 +1,5 @@
 <template>
-    <section class="task-content">
+    <section class="task-content wrap">
         <template v-if="list.length >= 1">
             <div class="box" v-for="(task, index) in list" :key="index">
                 <div><label>任务内容: </label>{{task.taskContent}}</div>
@@ -29,10 +29,19 @@ export default {
 }
 </script>
 <style lang="stylus" scoped>
+.wrap {
+    position: absolute;
+    width 100%
+    overflow hiddend
+    left: 0;
+    right: 0;
+    top: 40px;
+    bottom: 0;
+    overflow: auto;
+}
 .task-content
-    padding 0 20px
     .box
-        margin 40px 0px
+        margin 20px
         div
             border 1px solid #00baad
             font-size 14px

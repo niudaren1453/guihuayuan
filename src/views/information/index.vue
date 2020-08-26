@@ -20,8 +20,35 @@
                         <mt-tab-item id="3">项目归档</mt-tab-item>
                         <mt-tab-item id="4">修改项目名</mt-tab-item>
                         <mt-tab-item id="5">任务列表</mt-tab-item>
-
                     </mt-navbar>
+                    <mt-tab-container v-model="selected">
+                        <mt-tab-container-item id="5">
+                            <div class="more-project-content">
+                                <div class="content-ul" v-for="(moreItem, index) in projectPages.list" :key="index">
+                                  <div><label>任务内容:</label>{{moreItem.taskContent}} </div>
+                                  <div><label>任务开始时间:</label>{{moreItem.taskStartTime}}</div>
+                                  <div><label>任务结束时间:</label>{{moreItem.taskEndTime}} </div>
+                                  <div><label>接收人:</label>{{moreItem.recipient}}</div>
+                                  <div><label>指派人:</label>{{moreItem.recipient}}</div>
+                                  <div><label>任务进度:</label>{{moreItem.recipient}}</div>
+                                </div>
+                            </div>
+                            <div class="more-project-page"
+                            style="display: flex; justify-content: center;">
+                                <el-pagination
+                                    :page-size="projectPages.limit"
+                                    background
+                                    layout="prev, pager, next"
+                                    :total="projectPages.total"
+                                    :current-page="projectPages.currentPage"
+                                    @current-change="handleProjectChnge"
+                                   >
+                                </el-pagination>
+                                    <!-- " -->
+                                    <!--  -->
+                            </div>
+                        </mt-tab-container-item>
+                    </mt-tab-container>
                     <!-- <mt-tab-container v-model="selected">
                     <mt-tab-container-item id="1">
                         我是发布的内容
@@ -128,6 +155,9 @@
         <!-- <ShowImg :ShowImg="ShowImg" :ImgCode="ImgCode" v-on:handleHideImg="handleHideImg" /> -->
         <!-- 发布任务组件 -->
         <AssignTask v-if='assign.isShow'> </AssignTask>
+        <!-- 更多修改项目名显示 -->
+        <ShowInput :isShow='isShowInput' v-on:define='setProjectName'
+        v-on:cancel='hideShowInput' />
     </div>
 </template>
 
@@ -143,6 +173,7 @@ import EntityFile from '@/components/EntityFile' // 7个模块的内容组件
 // import ProjectApproval from '../components/ProjectApproval'
 import AssignTask from './components/AssignTask' // 发布任务
 import Reply from '@/components/show/Reply' // 评论弹窗
+import ShowInput from '@/components/show/ShowInput' // 更多-修改项目名使用
 export default {
     data() {
         return {
@@ -153,6 +184,7 @@ export default {
             ShowImg: false, // 是否二维码显示
             isEntityFile: true, // 是否隐藏entityfile
             isShowReply: false, // 是否显示评论弹窗
+            isShowInput: false, // 是否显示input
             nowPosition: 1, // 当前的位置 0 是分页 1是非分页 2待定
             selected: 0, // 更多内容tab使用
             // ImgCode: '', // 二维码的code
@@ -231,6 +263,12 @@ export default {
                 currentPage: 1,
                 limit: 10,
                 total: null
+            },
+            projectPages: {
+                list: [],
+                currentPage: 1,
+                limit: 3,
+                total: null
             }
         }
     },
@@ -243,7 +281,8 @@ export default {
         // Niusearch,
         Niupage,
         Header,
-        Reply
+        Reply,
+        ShowInput
         // ProjectApproval
     },
     mounted() {
@@ -413,8 +452,41 @@ export default {
         // 弹窗评论隐藏组件
         hideBox(e) {
             this.isShowReply = false
-        }
+        },
         // ---------------------------------------------------------------
+
+        // 更多中的方法-------
+        // 设置项目名字
+        setProjectName(e) {
+            console.log(e)
+            this.$axios('http://58.22.125.43:8888/project/updateNickName/' + e + '/' + this.id).then(
+                (res) => {
+                    Toast(res.data.message)
+                    this.isShowInput = false
+                    setTimeout(() => {
+                        this.$router.go(0)
+                    }, 1500)
+                })
+        },
+        // 隐藏
+        hideShowInput() {
+            this.isShowInput = false
+        },
+        // 列表http函数
+        handleProjectChnge(e) {
+            const params = {
+                currentPage: e,
+                pageSize: this.projectPages.limit,
+                queryInteger: this.id
+            }
+            this.$axios.post('http://58.22.125.43:8888/task/findProjectTask', params).then(
+                (res) => {
+                    console.log(res.data.total)
+                    this.projectPages.total = res.data.total
+                    this.projectPages.list = res.data.rows
+                }
+            )
+        }
     },
 
     watch: {
@@ -470,6 +542,31 @@ export default {
                     }
                     this.selected = 0
                 })
+            } else if (this.selected === '4') {
+                MessageBox({
+                    title: '提示',
+                    message: '确定执行此操作?',
+                    showCancelButton: true
+                }).then(action => {
+                    if (action === 'confirm') {
+                        this.isShowInput = true
+                    } else {
+                    }
+                    this.selected = 0
+                })
+            } else if (this.selected === '5') {
+                const params = {
+                    currentPage: this.projectPages.currentPage,
+                    pageSize: this.projectPages.limit,
+                    queryInteger: this.id
+                }
+                this.$axios.post('http://58.22.125.43:8888/task/findProjectTask', params).then(
+                    (res) => {
+                        console.log(res.data.total)
+                        this.projectPages.total = res.data.total
+                        this.projectPages.list = res.data.rows
+                    }
+                )
             }
         }
     }
@@ -625,7 +722,7 @@ footer {
                     }
                 }
             }
-// lock
+
             .btn-ul-lock {
                 flex: 1;
                 display: flex;
@@ -756,5 +853,16 @@ footer {
         }
     }
 }
-
+.more-project-content
+    .content-ul
+        margin 20px
+        div
+            border 1px solid #00baad
+            font-size 14px
+            padding 10px
+            line-height 150%
+        label
+            font-weight 550
+            padding-right 10px
+            font-size 16px
 </style>

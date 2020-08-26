@@ -1,10 +1,10 @@
 <template>
-    <section class="task">
+    <div id="task-container">
         <mt-header title='项目'>
             <mt-button icon="back" slot="left" @click="back"></mt-button>
     </mt-header>
     <Log :list = "list" />
-  </section>
+  </div>
 </template>
 
 <script>

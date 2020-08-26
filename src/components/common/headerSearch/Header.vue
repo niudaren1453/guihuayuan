@@ -104,8 +104,8 @@ export default {
                 console.log(params)
                 if (this.state === 1 || this.state === '1') {
                     this.$axios.post('http://58.22.125.43:8888/project/findBycondition', params).then(res => {
-                        console.log(res.data.rows)
-                        console.log(res.data.total)
+                        // console.log(res.data.rows)
+                        // console.log(res.data.total)
                         // console.log(111)
                         this.list = res.data.rows
                         this.isShowSearchBox = false
@@ -113,7 +113,7 @@ export default {
                     })
                 } else if (this.state === 2 || this.state === '2') {
                     this.$axios.post('http://58.22.125.43:8888/file/findFilesBycondition', params).then(res => {
-                        // console.log(res)
+                        console.log(res.data.rows)
                         // console.log(222)
                         this.list = res.data.rows
                         this.isShowSearchBox = false
@@ -139,7 +139,7 @@ export default {
                         if (res.data.flag === true) {
                             Toast(res.data.message)
                             // 更改当前选定的变色
-                            this.list[o.Searchindex].fileLock = 1
+                            this.list[o.index].fileLock = 1
                         } else {
                             Toast('文件锁定失败')
                         }

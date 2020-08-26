@@ -386,7 +386,6 @@ ul
                     }
                 }
             }
-// lock
             .btn-ul-lock {
                 flex: 1;
                 display: flex;
