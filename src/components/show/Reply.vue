@@ -39,6 +39,7 @@ export default {
             const params = {
                 commentContent
             }
+            console.log(this.id)
             this.$axios.post('http://58.22.125.43:8888/comment/addComment?phone=' + this.$store.state.phone + '&id=' + this.id, params).then((res) => {
                 Toast(res.data.message)
                 this.hideBox()

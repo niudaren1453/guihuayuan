@@ -11,7 +11,7 @@
                 <!-- 以下分为2种情况 一个是非更多的内容 ,还有一个是更多的内容 -->
                 <!-- v-on:handleShowImg="handleShowImg" -->
                 <EntityFile :items= this.$store.state.informationList v-on:handleShowReplyItem="handleShowReplyItem"
-                 v-if='isEntityFile'></EntityFile>
+                 v-if='isEntityFile' v-on:handleShowChiReplyItem='handleShowChiReplyItem'></EntityFile>
                 <!-- v-on:showContent='showContent' -->
                 <div v-else>
                     <mt-navbar v-model="selected">
@@ -29,8 +29,8 @@
                                   <div><label>任务开始时间:</label>{{moreItem.taskStartTime}}</div>
                                   <div><label>任务结束时间:</label>{{moreItem.taskEndTime}} </div>
                                   <div><label>接收人:</label>{{moreItem.recipient}}</div>
-                                  <div><label>指派人:</label>{{moreItem.recipient}}</div>
-                                  <div><label>任务进度:</label>{{moreItem.recipient}}</div>
+                                  <div><label>指派人:</label>{{moreItem.designation}}</div>
+                                  <div><label>任务进度:</label>{{moreItem.taskProgress}}</div>
                                 </div>
                             </div>
                             <div class="more-project-page"
@@ -379,6 +379,11 @@ export default {
             this.$store.state.informationList[arr[0]].date[arr[1]].isShowComment = !this.$store.state.informationList[arr[0]].date[arr[1]].isShowComment
             // 截取
             // this.list
+        },
+        // 显示隐藏子文件夹文件评论列表
+        handleShowChiReplyItem(e) {
+            const arr = e.split('.')
+            this.$store.state.informationList[arr[0]].sonFile[arr[1]].file[arr[2]].ishiddencomment = !this.$store.state.informationList[arr[0]].sonFile[arr[1]].file[arr[2]].ishiddencomment
         },
         // 折叠
         // showContent(e) {
