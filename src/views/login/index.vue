@@ -57,7 +57,7 @@ export default {
                         Toast('请输入正确的手机号')
                     }
                 })
-            let time = 5 // 60m
+            let time = 60 // 60m
             this.isTimer = true // 是否禁用计时器
             this.codeText = time + '秒后再获取' // 计时器按钮文本
             this.isReadonly = false
@@ -86,9 +86,13 @@ export default {
                     console.log(res)
                     if (res.data.flag) {
                         this.$store.state.phone = telephone
-                        this.$router.push({ path: '/index' })
+                        Toast(res.data.message)
+                        setTimeout(() => {
+                            this.$router.push({ path: '/index' })
+                            // console.log(1)
+                        }, 1500)
                     } else {
-                        Toast('登录失败')
+                        Toast(res.data.message)
                     }
                 })
         }
