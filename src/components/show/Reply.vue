@@ -48,10 +48,6 @@ export default {
                 }, 1500)
             })
         }
-        // handleSendReply() {
-        //     this.flag = false
-        //     this.$router.push({ path: '/index' })
-        // }
     }
 }
 

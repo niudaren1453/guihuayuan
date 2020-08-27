@@ -3,15 +3,19 @@
         <div v-for="(item, index) in items" :key="index">
             <!-- class="hideContent" -->
             <!-- :ref="'ref'+index" -->
-            <div
-                class="headerBox"
-                @click="showContent(index),checkChiFile(item.id,item.panduandedongxi)"
-            >
+            <div class="headerBox" @click="showContent(index),checkChiFile(item.id,item.panduandedongxi)">
                 <div>{{item.title}}</div>
                 <i class="iconfont" :class="item.ishidden?'icon-xiajiantou':'icon-xiangshang'"></i>
             </div>
+
             <!-- 2  -->
             <template v-if="item.ishidden">
+                <!-- 添加子文件夹按钮 -->
+                <div style="position:relative;height:40px">
+                    <div class='add-chi-btn'
+                    @click="handleShowAddChiFile(index + 1)">+</div>  <!--后台需要传的是数组下标加1 -->
+                </div>
+                <!-- 父文件夹下的东西↓ -->
                 <div class="item" v-for="(item2, index2) in item.date" :key="index2">
                     <div class="title">{{item2.title}}</div>
                     <div class="content-item">
@@ -95,108 +99,110 @@
                     </div>
                 </div>
                 <!-- 子文件夹    -->
-                <div class="item"
+                <div
                     v-for="(chiItem, index4) in item.sonFile"
                     :key="'fileson'+
                 index4">
-                    <div class="chi-headerBox headerBox">
+                    <div class="chi-headerBox headerBox" @click="showChiContent(index,index4)">
                         <!-- 子文件夹方法，显示子文件内容 -->
                         <div>{{chiItem.sonFile}}</div>
                         <i
                             class="iconfont"
-                            :class="item.ishidden?'icon-xiajiantou':'icon-xiangshang'"
+                            :class="chiItem.filehidden?'icon-xiajiantou':'icon-xiangshang'"
                         ></i>
                     </div>
-                    <!-- 子文件文件 -->
-                    <div class="item" v-for="(chiFileItem, index5) in chiItem.file" :key="index5">
-                        <div class="title">{{chiFileItem.title}}</div>
-                        <div class="content-item">
-                            <div class="left">
-                                <!-- <img :src="item.qrcodeImageUrl" /> -->
-                                <img :src="chiFileItem.fileImgSrc" />
-                            </div>
-                            <div class="right">
-                                <div class="filename">{{chiFileItem.fileName}}</div>
-                                <div class="content">
-                                    <div class="date_name">
-                                        <div>{{chiFileItem.uploadTime}}</div>
-                                        <div>{{chiFileItem.uploadPerson}}</div>
+                    <!-- 子文件夹文件 -->
+                    <template v-if="chiItem.filehidden">
+                        <div class="item" v-for="(chiFileItem, index5) in chiItem.file" :key="index5">
+                            <div class="title">{{chiFileItem.title}}</div>
+                            <div class="content-item">
+                                <div class="left">
+                                    <!-- <img :src="item.qrcodeImageUrl" /> -->
+                                    <img :src="chiFileItem.fileImgSrc" />
+                                </div>
+                                <div class="right">
+                                    <div class="filename">{{chiFileItem.fileName}}</div>
+                                    <div class="content">
+                                        <div class="date_name">
+                                            <div>{{chiFileItem.uploadTime}}</div>
+                                            <div>{{chiFileItem.uploadPerson}}</div>
+                                        </div>
+                                        <div :class="chiFileItem.fileLock=='1'?'btn-ul-lock':'btn-ul'">
+                                            <!--  @click="handleShowImg(chiFileItem.qrcodeImageUrl)" ↓ -->
+                                            <router-link
+                                                tag="div"
+                                                :to="{name:'task',query:{id:chiFileItem.id}}"
+                                                class="btn-li"
+                                            >
+                                                <i class="iconfont icon-wendang"></i>
+                                                <div>任务列表</div>
+                                            </router-link>
+                                            <div class="btn-li">
+                                                <i class="iconfont icon-wendang"></i>
+                                                <a :href="chiFileItem.fileUrl">
+                                                    <div>下载</div>
+                                                </a>
+                                            </div>
+                                            <router-link
+                                                tag="div"
+                                                :to="{name:'log',query:{id:chiFileItem.id}}"
+                                                class="btn-li"
+                                            >
+                                                <i class="iconfont icon-wendang"></i>
+                                                <div>日志</div>
+                                            </router-link>
+                                            <div
+                                                class="btn-li"
+                                                @click="handleShowChiReplyItem(index,index4,index5)"
+                                            >
+                                                <i class="iconfont icon-wendang"></i>
+                                                <div>评论</div>
+                                            </div>
+                                            <div
+                                                class="btn-li"
+                                                @click="handleLockChiFile(index,index4,index5,chiFileItem.id)"
+                                            >
+                                                <i class="iconfont icon-wendang"></i>
+                                                <div>锁定文件</div>
+                                            </div>
+                                            <!-- 纱布 -->
+                                            <div class="gauze" v-if="chiFileItem.fileLock == '1'"></div>
+                                        </div>
                                     </div>
-                                    <div :class="chiFileItem.fileLock=='1'?'btn-ul-lock':'btn-ul'">
-                                        <!--  @click="handleShowImg(chiFileItem.qrcodeImageUrl)" ↓ -->
-                                        <router-link
-                                            tag="div"
-                                            :to="{name:'task',query:{id:chiFileItem.id}}"
-                                            class="btn-li"
-                                        >
-                                            <i class="iconfont icon-wendang"></i>
-                                            <div>任务列表</div>
-                                        </router-link>
-                                        <div class="btn-li">
-                                            <i class="iconfont icon-wendang"></i>
-                                            <a :href="chiFileItem.fileUrl">
-                                                <div>下载</div>
-                                            </a>
+                                </div>
+                                <!-- 判断来显示渲染评论 -->
+                            </div>
+                            <div class="file-item" v-if="chiFileItem.ishiddencomment">
+                                <div class="action-btn">
+                                    <mt-button
+                                        @click.native="handleShowReply(chiFileItem.id)"
+                                        size="normal"
+                                    >评论</mt-button>
+                                </div>
+                                <!-- 3 -->
+                                <div
+                                    class="file-content file-child"
+                                    v-for="(chiFileCommitItem, index3) in chiFileItem.listComment"
+                                    :key="index3"
+                                >
+                                    <div class="file-left">
+                                        <!-- <img src /> -->
+                                    </div>
+                                    <div class="file-mid">
+                                        <div class="mid-top">
+                                            <p>{{chiFileCommitItem.commentContent}}</p>
                                         </div>
-                                        <router-link
-                                            tag="div"
-                                            :to="{name:'log',query:{id:chiFileItem.id}}"
-                                            class="btn-li"
-                                        >
-                                            <i class="iconfont icon-wendang"></i>
-                                            <div>日志</div>
-                                        </router-link>
-                                        <div
-                                            class="btn-li"
-                                            @click="handleShowChiReplyItem(index,index4,index5)"
-                                        >
-                                            <i class="iconfont icon-wendang"></i>
-                                            <div>评论</div>
+                                        <div class="mid-bot">
+                                            <p>{{chiFileCommitItem.commentProson}}</p>&nbsp;&nbsp;
+                                            <p
+                                                style="margin-left: 10px"
+                                            >评论时间：{{chiFileCommitItem.commentTime}}</p>
                                         </div>
-                                        <div
-                                            class="btn-li"
-                                            @click="handleLockChiFile(index,index4,index5,chiFileItem.id)"
-                                        >
-                                            <i class="iconfont icon-wendang"></i>
-                                            <div>锁定文件</div>
-                                        </div>
-                                        <!-- 纱布 -->
-                                        <div class="gauze" v-if="chiFileItem.fileLock == '1'"></div>
                                     </div>
                                 </div>
                             </div>
-                            <!-- 判断来显示渲染评论 -->
                         </div>
-                        <div class="file-item" v-if="chiFileItem.ishiddencomment">
-                            <div class="action-btn">
-                                <mt-button
-                                    @click.native="handleShowReply(chiFileItem.id)"
-                                    size="normal"
-                                >评论</mt-button>
-                            </div>
-                            <!-- 3 -->
-                            <div
-                                class="file-content file-child"
-                                v-for="(chiFileCommitItem, index3) in chiFileItem.listComment"
-                                :key="index3"
-                            >
-                                <div class="file-left">
-                                    <!-- <img src /> -->
-                                </div>
-                                <div class="file-mid">
-                                    <div class="mid-top">
-                                        <p>{{chiFileCommitItem.commentContent}}</p>
-                                    </div>
-                                    <div class="mid-bot">
-                                        <p>{{chiFileCommitItem.commentProson}}</p>&nbsp;&nbsp;
-                                        <p
-                                            style="margin-left: 10px"
-                                        >评论时间：{{chiFileCommitItem.commentTime}}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    </template>
                 </div>
             </template>
         </div>
@@ -209,6 +215,7 @@ import Reply from './show/Reply'
 import { Toast, MessageBox } from 'mint-ui'
 
 export default {
+    name: 'EntityFile',
     data() {
         return {
             id: 0, // 传给组件show/Reply 的id
@@ -241,15 +248,27 @@ export default {
         },
         // 折叠
         showContent(index) {
-            this.$emit('showContent', index)
+            // this.$emit('showContent', index)
             // 由于是在store写的！！不推荐直接更改state数据
             console.log(this.$store.state.informationList[index])
             this.$store.state.informationList[index].ishidden = !this.$store
                 .state.informationList[index].ishidden
         },
-        // 判断是否有子文件
+        // 是否折叠子文件夹文件
+        showChiContent(index1, index2) {
+            this.$store.state.informationList[index1].sonFile[index2].filehidden = !this.$store.state.informationList[index1].sonFile[index2].filehidden
+        }, // 判断是否有子文件
         checkChiFile() {
             // 如果有拿到id什么的再做一次请求
+        },
+        // 添加子文件夹的方法
+        handleShowAddChiFile(index) {
+            // console.log(index)
+            this.$emit('handleShowAddChiFile', index)
+        },
+        // 添加子文件夹窗口的方法
+        hiddenShowInput() {
+            this.isShowInput = false
         },
         // 评论
         handleShowReply(e) {
@@ -348,10 +367,24 @@ export default {
     font-size: 16px;
     background: rgba(244, 244, 244, 0.5);
 }
-
+.add-chi-btn{ // 添加子文件夹按钮
+    display: flex;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 25px;
+    width: 25px;
+    right: 20px;
+    top: 2.75px;
+    font-size: 24px;
+    border-radius: 50%;
+    padding: 5px;
+    color: #008080;
+    background: rgba(211,211,211,0.8);
+}
 .item {
     padding: 0 10px;
-
     .title {
     }
 
