@@ -9,13 +9,12 @@
 <body style="position: relative;">
     <!-- <div id="xxx" style="position: absolute;background: red; height: 40px;width: 40px;"></div> -->
     <ul id="ul" style="height: 100px;width: 100px;">
-        <li class="li11" style="height: 40px;width: 40px; background: red;margin:20px ;"> 
+        <li class="li11" style="height: 40px;width: 40px; background: red;margin:20px ;">
             <span style="height: 10px; width: 10px; background: pink;">111</span>
         </li>
         <li style="height: 40px;width: 40px; background: red;margin:20px ;"> </li>
         <li style="height: 40px;width: 40px; background: red;margin:20px ;"> </li>
         <li style="height: 40px;width: 40px; background: red;margin:20px ;"> </li>
-
 
     </ul>
 </body>
@@ -25,13 +24,20 @@
     ul.addEventListener('click', function (e) {
         console.log( e.target)
         if (e.target.tagName.toLowerCase() === 'li') {
-            console.log('li')  
+            console.log('li')
         }
         if( e.target.tagName.toLowerCase() === 'span'){
             console.log('span')
         }
     })
 
+    const val =(rule,value,callback)=>{
+        if(!rule){
+            callback(new Error('error'))
+        }else{
+            callback()
+        }
+    }
 
 </script>
 

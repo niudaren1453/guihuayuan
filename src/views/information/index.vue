@@ -31,7 +31,7 @@
                                   <div><label>任务结束时间:</label>{{moreItem.taskEndTime}} </div>
                                   <div><label>接收人:</label>{{moreItem.recipient}}</div>
                                   <div><label>指派人:</label>{{moreItem.designation}}</div>
-                                  <div><label>任务进度:</label>{{moreItem.taskProgress}}</div>
+                                  <!-- <div><label>任务进度:</label>{{moreItem.taskProgress}}</div> -->
                                 </div>
                             </div>
                             <div class="more-project-page"

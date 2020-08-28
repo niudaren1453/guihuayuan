@@ -15,15 +15,18 @@
         <div style=" align-items: center; box-sizing: border-box;
             display: flex; font-size: 16px;line-height: 1;min-height: inherit;
             overflow: hidden;padding: 0 10px;width: 100%; height:30px">
-        <input type="checkbox" :checked="isChecked"> <label>记住登陆状态 </label>
+        <input type="checkbox" :checked="isChecked"> <label>记住账号 </label>
         </div>
         <mt-button type="primary" :disabled="isLogin" size="large" @click.native="handleLogin">登陆</mt-button>
             <!-- {{this.$store.state.phone}} -->
+            <!-- <mt-button type="primary" size="large" @click.native="handleTestSet">get</mt-button> -->
+            <!-- <mt-button type="primary"  size="large" @click.native="handleTestSet">set</mt-button> -->
     </div>
 </template>
 
 <script>
 import { Toast } from 'mint-ui'
+import { setToken, getToken, removeToken } from '@/utils/auth.js'
 export default {
     name: 'login',
     data() {
@@ -39,7 +42,10 @@ export default {
             isChecked: false // 是否选中登陆状态
         }
     },
-    mounted() {},
+    mounted() {
+        const phone = getToken()
+        this.phone = phone
+    },
     methods: {
         // 获取验证码按钮
         handleGetCode() {
@@ -87,6 +93,12 @@ export default {
                     if (res.data.flag) {
                         this.$store.state.phone = telephone
                         Toast(res.data.message)
+                        if (this.isChecked) {
+                            removeToken()
+                            setToken(telephone)
+                        } else {
+                            removeToken()
+                        }
                         setTimeout(() => {
                             this.$router.push({ path: '/index' })
                             // console.log(1)
@@ -95,7 +107,14 @@ export default {
                         Toast(res.data.message)
                     }
                 })
+        },
+        handleTestSet() {
+            setToken(18702762444)
         }
+        // handleTestGet() {
+        //     const as = getToken()
+        //     console.log(as)
+        // }
     },
     watch: {
         captcha() {
