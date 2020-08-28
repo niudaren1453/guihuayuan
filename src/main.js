@@ -18,13 +18,11 @@ Vue.use(Element)
 
 Vue.config.productionTip = false
 router.beforeEach((to, from, next) => {
-    console.log(to)
     const role = getToken()
-    if (role) {
-        localStorage.setItem('phone', role)
-        next()
-    } else {
+    if (!role && to.path !== '/login') {
         next('/login')
+    } else {
+        next()
     }
 })
 

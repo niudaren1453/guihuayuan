@@ -114,7 +114,7 @@ const router = new VueRouter({
     mode: 'history',
     base: process.env.BASE_URL,
     routes: [
-        { path: '/', redirect: '/login' },
+        { path: '/', redirect: '/index' },
         main,
         information,
         details,

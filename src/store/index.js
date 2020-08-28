@@ -1,12 +1,18 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+import { getToken } from '../utils/auth'
 
 Vue.use(Vuex)
 
+let myPhone = getToken()
+if (myPhone === undefined) {
+    myPhone = 11111111111
+}
+console.log(myPhone)
 export default new Vuex.Store({
     state: {
-        phone: localStorage.phone, // 暂时写死  ，王金成phone
+        phone: myPhone, // 暂时写死  ，王金成phone
         informationList: [],
         informationListCache: []
     },

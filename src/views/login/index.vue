@@ -15,7 +15,7 @@
         <div style=" align-items: center; box-sizing: border-box;
             display: flex; font-size: 16px;line-height: 1;min-height: inherit;
             overflow: hidden;padding: 0 10px;width: 100%; height:30px">
-        <input type="checkbox" :checked="isChecked"> <label>记住账号 </label>
+        <!-- <input type="checkbox" :checked="isChecked"> <label>记住账号 </label> -->
         </div>
         <mt-button type="primary" :disabled="isLogin" size="large" @click.native="handleLogin">登陆</mt-button>
             <!-- {{this.$store.state.phone}} -->
@@ -26,7 +26,7 @@
 
 <script>
 import { Toast } from 'mint-ui'
-import { setToken, getToken, removeToken } from '@/utils/auth.js'
+import { setToken, getToken } from '@/utils/auth.js'
 export default {
     name: 'login',
     data() {
@@ -39,11 +39,15 @@ export default {
             isLogin: true, // 是否禁用登录按钮
             // popupVisible: true, // 是否
             isReadonly: true, // 是否可编辑,
-            isChecked: false // 是否选中登陆状态
+            isChecked: false, // 是否选中登陆状态
+            time: 0
         }
     },
     mounted() {
         const phone = getToken()
+        if (phone === undefined) {
+            return
+        }
         this.phone = phone
     },
     methods: {
@@ -75,6 +79,7 @@ export default {
                     this.isTimer = false
                 } else {
                     time--
+                    this.time = time
                     this.codeText = time + '秒后再获取'
                 }
             }, 1000)
@@ -93,17 +98,16 @@ export default {
                     if (res.data.flag) {
                         this.$store.state.phone = telephone
                         Toast(res.data.message)
-                        if (this.isChecked) {
-                            removeToken()
-                            setToken(telephone)
-                        } else {
-                            removeToken()
-                        }
+                        // if (this.isChecked) {
+                        // console.log(telephone)
+                        setToken(telephone)
+                        // }
                         setTimeout(() => {
-                            this.$router.push({ path: '/index' })
+                            this.$router.push({ path: '/index/project' })
                             // console.log(1)
                         }, 1500)
                     } else {
+                        console.log('登录失败')
                         Toast(res.data.message)
                     }
                 })
@@ -128,7 +132,7 @@ export default {
         },
         phone() {
             // 监听 phone     判断手机是否符合标准
-            if (this.phone.length === 11) {
+            if (this.phone.length === 11 && this.time === 0) {
                 console.log('手机长度满足')
                 this.isTimer = false
             } else {
