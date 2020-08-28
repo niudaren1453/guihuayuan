@@ -6,7 +6,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        phone: 18702762444, // 暂时写死  ，王金成phone
+        phone: localStorage.phone, // 暂时写死  ，王金成phone
         informationList: [],
         informationListCache: []
     },
