@@ -15,15 +15,18 @@
         <div style=" align-items: center; box-sizing: border-box;
             display: flex; font-size: 16px;line-height: 1;min-height: inherit;
             overflow: hidden;padding: 0 10px;width: 100%; height:30px">
-        <input type="checkbox" :checked="isChecked"> <label>记住登陆状态 </label>
+        <!-- <input type="checkbox" :checked="isChecked"> <label>记住账号 </label> -->
         </div>
         <mt-button type="primary" :disabled="isLogin" size="large" @click.native="handleLogin">登陆</mt-button>
             <!-- {{this.$store.state.phone}} -->
+            <!-- <mt-button type="primary" size="large" @click.native="handleTestSet">get</mt-button> -->
+            <!-- <mt-button type="primary"  size="large" @click.native="handleTestSet">set</mt-button> -->
     </div>
 </template>
 
 <script>
 import { Toast } from 'mint-ui'
+import { setToken, getToken } from '@/utils/auth.js'
 export default {
     name: 'login',
     data() {
@@ -36,10 +39,17 @@ export default {
             isLogin: true, // 是否禁用登录按钮
             // popupVisible: true, // 是否
             isReadonly: true, // 是否可编辑,
-            isChecked: false // 是否选中登陆状态
+            isChecked: false, // 是否选中登陆状态
+            time: 0
         }
     },
-    mounted() {},
+    mounted() {
+        const phone = getToken()
+        if (phone === undefined) {
+            return
+        }
+        this.phone = phone
+    },
     methods: {
         // 获取验证码按钮
         handleGetCode() {
@@ -57,7 +67,7 @@ export default {
                         Toast('请输入正确的手机号')
                     }
                 })
-            let time = 5 // 60m
+            let time = 60 // 60m
             this.isTimer = true // 是否禁用计时器
             this.codeText = time + '秒后再获取' // 计时器按钮文本
             this.isReadonly = false
@@ -69,13 +79,14 @@ export default {
                     this.isTimer = false
                 } else {
                     time--
+                    this.time = time
                     this.codeText = time + '秒后再获取'
                 }
             }, 1000)
         },
         handleLogin() {
             // 登录按钮，      后台交互
-            console.log(111)
+            // console.log(111)
             const validateCode = this.captcha
             const telephone = this.phone
             const params = { validateCode, telephone }
@@ -86,12 +97,28 @@ export default {
                     console.log(res)
                     if (res.data.flag) {
                         this.$store.state.phone = telephone
-                        this.$router.push({ path: '/index' })
+                        Toast(res.data.message)
+                        // if (this.isChecked) {
+                        // console.log(telephone)
+                        setToken(telephone)
+                        // }
+                        setTimeout(() => {
+                            this.$router.push({ path: '/index/project' })
+                            // console.log(1)
+                        }, 1500)
                     } else {
-                        Toast('登录失败')
+                        console.log('登录失败')
+                        Toast(res.data.message)
                     }
                 })
+        },
+        handleTestSet() {
+            setToken(18702762444)
         }
+        // handleTestGet() {
+        //     const as = getToken()
+        //     console.log(as)
+        // }
     },
     watch: {
         captcha() {
@@ -105,7 +132,7 @@ export default {
         },
         phone() {
             // 监听 phone     判断手机是否符合标准
-            if (this.phone.length === 11) {
+            if (this.phone.length === 11 && this.time === 0) {
                 console.log('手机长度满足')
                 this.isTimer = false
             } else {

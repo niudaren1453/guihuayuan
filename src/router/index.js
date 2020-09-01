@@ -7,6 +7,7 @@ import log from './modules/log'
 import uploadFile from './modules/uploadFile'
 import login from './modules/login'
 import task from './modules/task'
+// import {createVuexAlong} from 'vuex-along'
 Vue.use(VueRouter)
 // const routes = [
 //     { path: '/', redirect: '/index' },

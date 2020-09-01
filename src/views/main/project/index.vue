@@ -95,7 +95,7 @@ export default {
         Header
     },
     mounted() {
-        this.$axios('http://58.22.125.43:8888/project/findAll/18702762444').then(res => {
+        this.$axios('http://58.22.125.43:8888/project/findAll/' + this.$store.state.phone).then(res => {
             console.log(res.data)
             this.list = res.data
         })

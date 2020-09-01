@@ -11,7 +11,8 @@
                 <!-- 以下分为2种情况 一个是非更多的内容 ,还有一个是更多的内容 -->
                 <!-- v-on:handleShowImg="handleShowImg" -->
                 <EntityFile :items= this.$store.state.informationList v-on:handleShowReplyItem="handleShowReplyItem"
-                 v-if='isEntityFile'></EntityFile>
+                 v-if='isEntityFile' v-on:handleShowChiReplyItem='handleShowChiReplyItem'
+                 v-on:handleShowAddChiFile='handleShowAddChiFile'></EntityFile>
                 <!-- v-on:showContent='showContent' -->
                 <div v-else>
                     <mt-navbar v-model="selected">
@@ -29,8 +30,8 @@
                                   <div><label>任务开始时间:</label>{{moreItem.taskStartTime}}</div>
                                   <div><label>任务结束时间:</label>{{moreItem.taskEndTime}} </div>
                                   <div><label>接收人:</label>{{moreItem.recipient}}</div>
-                                  <div><label>指派人:</label>{{moreItem.recipient}}</div>
-                                  <div><label>任务进度:</label>{{moreItem.recipient}}</div>
+                                  <div><label>指派人:</label>{{moreItem.designation}}</div>
+                                  <!-- <div><label>任务进度:</label>{{moreItem.taskProgress}}</div> -->
                                 </div>
                             </div>
                             <div class="more-project-page"
@@ -154,9 +155,12 @@
         <!-- 用来显示二维码的组件 -->
         <!-- <ShowImg :ShowImg="ShowImg" :ImgCode="ImgCode" v-on:handleHideImg="handleHideImg" /> -->
         <!-- 发布任务组件 -->
-        <AssignTask v-if='assign.isShow'> </AssignTask>
+        <AssignTask v-if='assign.isShow' cancel='hideAssign'> </AssignTask>
         <!-- 更多修改项目名显示 -->
         <ShowInput :isShow='isShowInput' v-on:define='setProjectName'
+        v-on:cancel='hideShowInput' />
+        <!-- 添加子文件夹使用0 -->
+        <ShowInput :isShow='isShowInput2' v-on:define="createFile"
         v-on:cancel='hideShowInput' />
     </div>
 </template>
@@ -179,14 +183,16 @@ export default {
         return {
             id: 1, // id
             fileId: 0, // 文件id 给分页的时候使用
-            typeId: 1, // 当前类型id    未使用
+            typeId: 1, // 当前类型id   用在添加子文件的时候使用
             // address: ['electronicsfile1', 'electronicsfile2'],
             ShowImg: false, // 是否二维码显示
             isEntityFile: true, // 是否隐藏entityfile
             isShowReply: false, // 是否显示评论弹窗
             isShowInput: false, // 是否显示input
+            isShowInput2: false, // 是否显示input 创建子文件使用
             nowPosition: 1, // 当前的位置 0 是分页 1是非分页 2待定
             selected: 0, // 更多内容tab使用
+            addIndex: 0, // 添加子文件夹的  父文件的索引
             // ImgCode: '', // 二维码的code
             // more 使用
             // file: '', // 归档字符
@@ -333,6 +339,7 @@ export default {
         },
         // 内容获取
         getInfo(e) {
+            this.typeId = e
             this.nowPosition = 0
             // 对选中状态时候字变红的处理
             for (let i = 0; i < this.items.length; i++) {
@@ -380,7 +387,12 @@ export default {
             // 截取
             // this.list
         },
-        // 折叠
+        // 显示隐藏子文件夹文件评论列表
+        handleShowChiReplyItem(e) {
+            const arr = e.split('.')
+            this.$store.state.informationList[arr[0]].sonFile[arr[1]].file[arr[2]].ishiddencomment = !this.$store.state.informationList[arr[0]].sonFile[arr[1]].file[arr[2]].ishiddencomment
+        },
+        // 折叠(废弃)
         // showContent(e) {
         //     console.log(this.list[e])
         //     // this.list[e].ishidden = v!this.list[e].ishidden
@@ -405,7 +417,7 @@ export default {
                 currentPage: e
             }
             this.$axios.post('http://58.22.125.43:8888/file/findFilesByEsc', params).then((res) => {
-                console.log(res)
+                // console.log(res)
                 // this.pages.total = res.data.total
                 this.searchList = res.data.rows
             })
@@ -413,9 +425,9 @@ export default {
         // -------------------------------------------------待考虑组件中
         // 锁定文件提示
         handleLockFile(index, e) {
-            console.log(index)
-            console.log(e)
-            console.log(this.searchList)
+            // console.log(index)
+            // console.log(e)
+            // console.log(this.searchList)
             MessageBox({
                 title: '提示',
                 message: '确定执行此操作?',
@@ -453,6 +465,22 @@ export default {
         hideBox(e) {
             this.isShowReply = false
         },
+        // 添加子文件夹方法
+        createFile(e) {
+            // console.log(e)
+            // console.log(this.id)
+            // console.log(this.typeId)
+            // console.log(this.addIndex)
+            const sonfile = this.id + '/' + this.typeId + '/' + this.addIndex + '/' + e
+            this.$axios('http://58.22.125.43:8888/file/createSonFile?sonfile=' + sonfile).then(
+                (res) => {
+                    Toast(res.data.message)
+                    setTimeout(() => {
+                        this.$router.go(0)
+                    }, 1500)
+                }
+            )
+        },
         // ---------------------------------------------------------------
 
         // 更多中的方法-------
@@ -471,6 +499,7 @@ export default {
         // 隐藏
         hideShowInput() {
             this.isShowInput = false
+            this.isShowInput2 = false
         },
         // 列表http函数
         handleProjectChnge(e) {
@@ -486,9 +515,16 @@ export default {
                     this.projectPages.list = res.data.rows
                 }
             )
+        },
+        // 添加文件夹
+        handleShowAddChiFile(index) {
+            this.addIndex = index
+            this.isShowInput2 = true
+        },
+        hideAssign() {
+            this.assign.isShow = false
         }
     },
-
     watch: {
         // 监听selected
         selected() {
