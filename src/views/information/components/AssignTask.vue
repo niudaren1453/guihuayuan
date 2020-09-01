@@ -112,12 +112,12 @@ export default {
                 recipient: str,
                 taskStartTime: this.value1,
                 taskEndTime: this.value2,
-                TaskContent: this.content
+                taskContent: this.content
             }
-            console.log(this.value1)
-            console.log(params)
+            // console.log(this.value1)
+            // console.log(params)
             this.$axios.post('http://58.22.125.43:8888/task/addProjectTask', params).then((res) => {
-                console.log(res)
+                // console.log(res)
                 Toast(res.data.message)
                 if (res.data.flag) {
                     this.cancel()

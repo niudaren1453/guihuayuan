@@ -1,6 +1,6 @@
 <template>
     <div class="Infomation">
-        <Header title='项目' state= 2 />
+        <Header :title='title' state= 2 />
         <!-- <NewAdd></NewAdd> -->
         <nav>
             <ProjectNav v-on:getInfo="getInfo" :list="items" />
@@ -178,9 +178,11 @@ import EntityFile from '@/components/EntityFile' // 7个模块的内容组件
 import AssignTask from './components/AssignTask' // 发布任务
 import Reply from '@/components/show/Reply' // 评论弹窗
 import ShowInput from '@/components/show/ShowInput' // 更多-修改项目名使用
+import merge from 'webpack-merge' // 动态修改路由query
 export default {
     data() {
         return {
+            title: '',
             id: 1, // id
             fileId: 0, // 文件id 给分页的时候使用
             typeId: 1, // 当前类型id   用在添加子文件的时候使用
@@ -304,11 +306,14 @@ export default {
         // this.getInformationListFun(listParams) // action
     },
     destroyed() {
-        console.log(1)
+        // console.log(1)
     },
     activated () {
         // console.log(111)
-        const { id } = this.$route.query
+        // console.log(this.$route.query)
+        // this.$route.query.title = 123
+        const { id, title } = this.$route.query
+        this.title = title
         this.id = id
         const params = {
             queryInteger: id,
@@ -491,6 +496,11 @@ export default {
                 (res) => {
                     Toast(res.data.message)
                     this.isShowInput = false
+                    // this.$route.query.title = e
+                    this.$router.push({
+                        query: merge(this.$route.query, { title: e })
+                    })
+                    console.log(this.$route.query)
                     setTimeout(() => {
                         this.$router.go(0)
                     }, 1500)
@@ -582,7 +592,7 @@ export default {
             } else if (this.selected === '4') {
                 MessageBox({
                     title: '提示',
-                    message: '确定执行此操作?',
+                    message: '确定要修改项目名  ?',
                     showCancelButton: true
                 }).then(action => {
                     if (action === 'confirm') {

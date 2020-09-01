@@ -10,7 +10,7 @@
                     :class="item.ishidden?'icon-xiangshang':'icon-xiajiantou'"></font>
                 </div>
                 <template v-if="item.ishidden">
-                    <router-link :to="{name:'information',query:{id:item2.id}}" v-for="(item2, index2) in item.date" :key="index2">
+                    <router-link :to="{name:'information',query:{id:item2.id,title:item2.projectTitle}}" v-for="(item2, index2) in item.date" :key="index2">
                         <div class="box-content">
                             <div class="content-top">
                                 <p>{{item2.projectTitle}}</p>

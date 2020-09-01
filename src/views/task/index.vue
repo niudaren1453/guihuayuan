@@ -20,7 +20,7 @@ export default {
         const { id } = this.$route.query
         this.id = id
         this.$axios.get('http://58.22.125.43:8888/task/findFilesTask/' + id).then(res => {
-            console.log(res.data)
+            // console.log(res.data)
             this.list = res.data
         })
     },
