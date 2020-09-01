@@ -28,3 +28,4 @@ npm run lint
 ### 关于 一些测试
     如在没有手机号登陆的情况下，去store文件夹下index更改state.phone ，默认18702762444
     初始路由界面调整route文件夹下 routes重定向到自定义的目录
+    测试的时候  main.js隐掉beforeach
