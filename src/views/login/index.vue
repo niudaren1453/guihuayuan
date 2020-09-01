@@ -86,7 +86,7 @@ export default {
         },
         handleLogin() {
             // 登录按钮，      后台交互
-            console.log(111)
+            // console.log(111)
             const validateCode = this.captcha
             const telephone = this.phone
             const params = { validateCode, telephone }

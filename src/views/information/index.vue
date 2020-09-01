@@ -155,7 +155,7 @@
         <!-- 用来显示二维码的组件 -->
         <!-- <ShowImg :ShowImg="ShowImg" :ImgCode="ImgCode" v-on:handleHideImg="handleHideImg" /> -->
         <!-- 发布任务组件 -->
-        <AssignTask v-if='assign.isShow'> </AssignTask>
+        <AssignTask v-if='assign.isShow' cancel='hideAssign'> </AssignTask>
         <!-- 更多修改项目名显示 -->
         <ShowInput :isShow='isShowInput' v-on:define='setProjectName'
         v-on:cancel='hideShowInput' />
@@ -520,6 +520,9 @@ export default {
         handleShowAddChiFile(index) {
             this.addIndex = index
             this.isShowInput2 = true
+        },
+        hideAssign() {
+            this.assign.isShow = false
         }
     },
     watch: {
