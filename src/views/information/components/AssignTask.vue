@@ -107,9 +107,9 @@ export default {
             // 当不为空的时候
             const str = this.command.toString()
             const params = {
-                ProjectId: this.$route.query.id,
+                projectId: this.$route.query.id,
                 phone: this.$store.state.phone,
-                Recipient: str,
+                recipient: str,
                 taskStartTime: this.value1,
                 taskEndTime: this.value2,
                 TaskContent: this.content
@@ -117,8 +117,11 @@ export default {
             console.log(this.value1)
             console.log(params)
             this.$axios.post('http://58.22.125.43:8888/task/addProjectTask', params).then((res) => {
-                Toast(res.data.message)
                 console.log(res)
+                Toast(res.data.message)
+                if (res.data.flag) {
+                    this.cancel()
+                }
                 // setTimeout(() => {
                 //     this.$router.go(0)
                 // }, 1500)
