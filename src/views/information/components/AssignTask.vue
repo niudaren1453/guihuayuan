@@ -36,21 +36,6 @@
                         </span>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item :command="item" v-for="(item, index) in item" :key="index">{{item}}</el-dropdown-item>
-                            <!-- <el-dropdown-item command="沈佳麒">沈佳麒</el-dropdown-item>
-                            <el-dropdown-item command="谌佳兵">谌佳兵</el-dropdown-item>
-                            <el-dropdown-item command="小熊">小熊</el-dropdown-item>
-                            <el-dropdown-item command="狗熊">狗熊</el-dropdown-item>
-                            <el-dropdown-item command="熊CC">熊CC</el-dropdown-item>
-                            <el-dropdown-item command="熊加息"> 熊加息</el-dropdown-item>
-                            <el-dropdown-item command="熊嘉喜">熊嘉喜</el-dropdown-item>
-                            <el-dropdown-item command="忘记成">忘记成</el-dropdown-item>
-                            <el-dropdown-item command="王金成">王金成</el-dropdown-item>
-                            <el-dropdown-item command="金金王">金金王</el-dropdown-item>
-                            <el-dropdown-item command="罗斯福">罗斯福</el-dropdown-item>
-                            <el-dropdown-item command="张伯伦">张伯伦</el-dropdown-item>
-                            <el-dropdown-item command="丘吉尔">丘吉尔</el-dropdown-item>
-                            <el-dropdown-item command="约翰逊">约翰逊</el-dropdown-item>
-                            <el-dropdown-item command="三熊">三熊</el-dropdown-item> -->
                         </el-dropdown-menu>
                     </el-dropdown>
                 </div>
@@ -84,7 +69,7 @@ export default {
         })
     },
     destroyed() {
-        console.log(123)
+        // console.log(123)
     },
     methods: {
         handleCommand(command) {
