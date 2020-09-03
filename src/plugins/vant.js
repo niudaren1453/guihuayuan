@@ -1,4 +1,4 @@
 import Vue from 'vue'
-import { Uploader } from 'vant'
-
+import { Uploader, Area } from 'vant'
 Vue.use(Uploader)
+Vue.use(Area)

@@ -39,6 +39,56 @@
         }
     }
 
+    function deepClone2(obj) {
+  var _obj = JSON.stringify(obj),
+    objClone = JSON.parse(_obj);
+  return objClone;
+}
+    // 赋值(只是引用)
+
+    // var obj1= {a:1,b:3,c:5}
+    // var obj2 = obj1
+    // obj2.b= 10
+    // console.log(obj1)
+    // console.log(obj2)
+
+    // 浅拷贝
+
+    // var obj3= {a:1,b:2,c:5,d:{a:123}}
+    // var obj4 = Object.assign({},obj3)
+    // obj4.a =100
+    // obj4.d={a:111}
+
+    // console.log(obj3)
+    // console.log(obj4)
+    // var obj5 = Object.assign(obj3)
+    // obj5.a=1000
+    // obj5.d = {a:1111}
+    // console.log(obj5)
+    // 深拷贝
+    // assign只有一层的时候为深拷贝
+//     var obj={
+// a:1,
+// b:{
+// c:1,
+// d:2
+// },
+// e:function(){
+
+// }
+// }
+// var obj1=Object.assign({},obj);
+// obj1.m=10;
+// obj1.b.c=444;
+// obj1.a = 4883
+// obj1.n={kk:000}
+// console.log(obj)
+// console.log(obj1);
+// console.log(obj1===obj)
+obj = {a:1,b:2,c:3,d:{a:666}}
+
+console.log(obj)
+
 </script>
 
 </html>
