@@ -150,7 +150,7 @@
             </template>
         </main>
         <footer>
-            <router-link tag="div" :to="{name:'uploadFile',query:{id:id,typeId:typeId}}">+</router-link>
+            <router-link tag="div" :to="{name:'uploadFile',query:{id:id,typeId:typeId,title:title}}">+</router-link>
         </footer>
         <!-- 用来显示二维码的组件 -->
         <!-- <ShowImg :ShowImg="ShowImg" :ImgCode="ImgCode" v-on:handleHideImg="handleHideImg" /> -->
@@ -312,29 +312,33 @@ export default {
         // console.log(111)
         // console.log(this.$route.query)
         // this.$route.query.title = 123
-        const { id, title } = this.$route.query
-        this.title = title
-        this.id = id
-        const params = {
-            queryInteger: id,
-            pageSize: 10,
-            currentPage: 1
+        // 用来解决projectnav的样式问题
+        if (this.$store.informationCache === true) {
+            for (const value of this.items) {
+                value.isColor = false
+            }
+            // 不建议直接操作store
+            this.$store.state.informationListCache = []
+            this.$store.state.informationList = []
+            this.nowPosition = 1
+            console.log(this.$route.meta.isUseCache)
+            const { id, title } = this.$route.query
+            this.title = title
+            this.id = id
+            const params = {
+                queryInteger: id,
+                pageSize: 10,
+                currentPage: 1
+            }
+            this.$axios.post('http://58.22.125.43:8888/file/findFilesByEsc', params).then((res) => {
+                console.log(res)
+                this.pages.total = res.data.total
+                this.searchList = res.data.rows
+            })
         }
-        this.$axios.post('http://58.22.125.43:8888/file/findFilesByEsc', params).then((res) => {
-            console.log(res)
-            this.pages.total = res.data.total
-            this.searchList = res.data.rows
-        })
     },
     deactivated() {
-        // 用来解决projectnav的样式问题
-        for (const value of this.items) {
-            value.isColor = false
-        }
-        // 不建议直接操作store
-        this.$store.state.informationListCache = []
-        this.$store.state.informationList = []
-        this.nowPosition = 1
+
     },
     // --------------------------------------------------------
     methods: {

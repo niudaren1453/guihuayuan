@@ -1,6 +1,6 @@
 <template>
   <div>
-    <mt-header title='xiangmu'>
+    <mt-header :title= title>
       <mt-button icon="back" slot="left" @click="back"></mt-button>
     </mt-header>
     <!--<div class="wrap">-->
@@ -15,6 +15,7 @@ export default {
     name: 'uploadFile',
     data () {
         return {
+            title: ''
         }
     },
     mounted() {
@@ -30,6 +31,9 @@ export default {
         back() {
             this.$router.go(-1)
         }
+    },
+    activated() {
+        this.title = this.$route.query.title
     }
 }
 </script>

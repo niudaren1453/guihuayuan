@@ -16,7 +16,7 @@ export default {
             list: []
         }
     },
-    mounted() {
+    activated() {
         const { id } = this.$route.query
         this.id = id
         this.$axios.get('http://58.22.125.43:8888/task/findFilesTask/' + id).then(res => {
@@ -27,6 +27,7 @@ export default {
     methods: {
         back() {
             this.$router.go(-1)
+            this.$store.informationCache = false
         }
     },
     components: {

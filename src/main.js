@@ -18,7 +18,7 @@ Vue.prototype.$axios = axios
 Vue.use(MintUI)
 Vue.use(Element)
 
-Vue.config.productionTip = false
+// Vue.config.productionTip = false
 // router.beforeEach((to, from, next) => {
 //     const role = getToken()
 //     if (!role && to.path !== '/login') {

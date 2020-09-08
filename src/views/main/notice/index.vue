@@ -53,7 +53,7 @@ export default {
             this.waiting = res.data[0].date
             this.waitingNum = res.data[0].date.length
             this.finished = res.data[1].date
-            this.finishedNum = res.data[0].date.length
+            this.finishedNum = res.data[1].date.length
         })
     }
 }

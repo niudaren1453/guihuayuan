@@ -100,6 +100,9 @@ export default {
             this.list = res.data
         })
     },
+    deactivated() {
+        this.$store.informationCache = true
+    },
     methods: {
         handleShow (i) {
             // console.log(i)

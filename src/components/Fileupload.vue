@@ -7,11 +7,11 @@
             </div>
             <div class="li">
                 <div>项目编号</div>
-                <div>1</div>
+                <div>{{this.$route.query.id}}</div>
             </div>
             <div class="li">
                 <div>手机号码</div>
-                <div>136750664625</div>
+                <div>{{this.$store.state.phone}}</div>
             </div>
             <div class="li">
                 <div>文件类型</div>
@@ -42,7 +42,7 @@
                 <!--  max-count 1      =只能上传1      详情参考vantui-->
                 <div>
                     <van-uploader  :max-size=10485760 max-count="1" @oversize='onOversize'
-                    v-model="fileList" :after-read="afterRead" accept="*" >
+                    v-model="fileList" :after-read="afterRead" accept="*" :before-delete="beforeDelect">
                         <template #preview-cover="{ file }">
                             <div class="preview-cover van-ellipsis">{{ file.name }}</div>
                         </template>
@@ -99,7 +99,7 @@
                 </div>
             </div>
             <div class="li" style="justify-content: space-around;">
-                <mt-button size="normal" @click.native="cancel">取消</mt-button>
+                <!-- <mt-button size="normal" @click.native="cancel">取消</mt-button> -->
                 <mt-button size="normal" @click.native="define">确定</mt-button>
             </div>
         </div>
@@ -107,6 +107,7 @@
 </template>
 
 <script>
+import { Toast } from 'mint-ui' // mintui
 export default {
     data() {
         return {
@@ -123,12 +124,13 @@ export default {
             selects: [],
             // par
             // 后期整参
-            id: this.$route.query.id,
-            phone: this.$store.state.phone,
+            id: '',
+            phone: '',
             type: '',
             theme: '',
             sonFile: '',
-            file: {},
+            file: '',
+            fileName: '',
             taskContent: '',
             //  级联动
             options1: [
@@ -271,6 +273,27 @@ export default {
         }
     },
     components: {},
+    mounted() {
+        this.$axios('http://58.22.125.43:8888/user/getProjectUser/' + this.$route.query.id).then((res) => {
+            this.item = res.data
+        })
+    },
+    activated() {
+        this.id = this.$route.query.id
+        this.phone = this.$store.state.phone
+    },
+    deactivated() {
+        this.type = ''
+        this.theme = ''
+        this.sonFile = ''
+        this.recipient = ''
+        this.taskContent = ''
+        this.taskStartTime = ''
+        this.taskEndTime = ''
+        this.file = ''
+        this.fileName = ''
+        this.fileList = []
+    },
 
     methods: {
         // 发布任务显示
@@ -282,41 +305,57 @@ export default {
             this.command = [...new Set(this.command)]
         },
         define() {
-            // console.log(this.type, this.theme, this.sonFile)
             // const params = new FormData()
             // params.append('projectId', this.id)
             // params.append('phone', this.phone)
+            // params.append('type', this.type)
+            // params.append('theme', this.theme)
+            // params.append('sonFile', this.sonFile)
+            // params.append('recipient', this.command)
+            // params.append('taskStartTime', this.value1)
+            // params.append('taskEndTime', this.value2)
+            // params.append('taskContent', this.content)
+            // params.append('file', this.file)
             // console.log(params)
-            const config = {
-                // 添加请求头
-                headers: { 'Content-Type': 'multipart/form-data' },
-                // 添加上传进度监听事件
-                onUploadProgress: e => {
-                    var completeProgress = ((e.loaded / e.total * 100) | 0) + '%'
-                    this.progress = completeProgress
-                }
-            }
+            // const config = {
+            //     // 添加请求头
+            //     headers: { 'Content-Type': 'multipart/form-data' },
+            //     // 添加上传进度监听事件
+            //     onUploadProgress: e => {
+            //         var completeProgress = ((e.loaded / e.total * 100) | 0) + '%'
+            //         this.progress = completeProgress
+            //     }
+            // }
+            const str = this.command.toString()
             const params = {
                 projectId: this.id,
                 phone: this.phone,
                 type: this.type,
                 theme: this.theme,
                 sonFile: this.sonFile, // 否
-                recipient: this.command, // 否
+                recipient: str, // 否
                 taskStartTime: this.value1, // 否
                 taskEndTime: this.value2, // 否
                 taskContent: this.content, // 否
-                file: this.file
+                file: this.file,
+                fileName: this.fileName
             }
             console.log(params)
-            this.$axios.post('http://58.22.125.43:8888/file/fileupload', params, config).then((res) => {
+            this.$axios.post('http://58.22.125.43:8888/file/fileupload', params).then((res) => {
                 console.log(res)
+                if (res.data.flag) {
+                    Toast(res.data.message)
+                    setTimeout(() => {
+                        this.$router.go(-1)
+                    }, 1500)
+                } else {
+                    Toast(res.data.message)
+                }
             })
         },
-        cancel() {
-            // this.$emit('cancel')
-
-        },
+        // cancel() {
+        //     this.$emit('cancel')
+        // },
         // 级联
         handleChange1(value) {
             this.opValue1 = value[0]
@@ -355,6 +394,14 @@ export default {
             console.dir(file)
             console.log(file.content)
             this.file = file.content
+            this.fileName = file.file.name
+        },
+        // 删除上传文件
+        beforeDelect(file) {
+            this.file = ''
+            this.fileName = ''
+            console.log(this.file)
+            return true
         },
         onOversize() {
             console.log(111)
