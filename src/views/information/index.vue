@@ -309,19 +309,19 @@ export default {
         // console.log(1)
     },
     activated () {
-        // console.log(111)
+        console.log(111)
         // console.log(this.$route.query)
         // this.$route.query.title = 123
         // 用来解决projectnav的样式问题
-        if (this.$store.informationCache === true) {
+        if (this.$store.state.informationCache) {
             for (const value of this.items) {
                 value.isColor = false
             }
+            console.log('ac-true')
             // 不建议直接操作store
             this.$store.state.informationListCache = []
             this.$store.state.informationList = []
             this.nowPosition = 1
-            console.log(this.$route.meta.isUseCache)
             const { id, title } = this.$route.query
             this.title = title
             this.id = id

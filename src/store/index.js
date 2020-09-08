@@ -15,7 +15,8 @@ export default new Vuex.Store({
         // phone: myPhone, // 暂时写死  ，王金成phone
         phone: 18702762444,
         informationList: [],
-        informationListCache: []
+        informationListCache: [],
+        informationCache: true
     },
     mutations: {
         // 让inf使用缓存的数组
