@@ -247,7 +247,7 @@ export default {
                 {
                     id: 7,
                     color: 'green',
-                    title: '竣工文件',
+                    title: '竣工归档',
                     notice: false,
                     isColor: false
                 },
@@ -496,7 +496,7 @@ export default {
         // 设置项目名字
         setProjectName(e) {
             console.log(e)
-            this.$axios('http://58.22.125.43:8888/project/updateNickName/' + e + '/' + this.id).then(
+            this.$axios('http://58.22.125.43:8888/project/updateNickName/' + e + '/' + this.id + '/' + this.$store.state.phone).then(
                 (res) => {
                     Toast(res.data.message)
                     this.isShowInput = false
@@ -581,7 +581,7 @@ export default {
                     showCancelButton: true
                 }).then(action => {
                     if (action === 'confirm') {
-                        this.$axios('http://58.22.125.43:8888/project/updateProjectFinish/' + this.id).then(
+                        this.$axios('http://58.22.125.43:8888/project/updateProjectFinish/' + this.id + '/' + this.$store.state.phone).then(
                             (res) => {
                                 Toast(res.data.message)
                                 setTimeout(() => {
