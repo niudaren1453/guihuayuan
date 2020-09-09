@@ -181,26 +181,7 @@
                                         >评论</mt-button>
                                     </div>
                                     <!-- 3 -->
-                                    <div
-                                        class="file-content file-child"
-                                        v-for="(chiFileCommitItem, index3) in chiFileItem.listComment"
-                                        :key="index3"
-                                    >
-                                        <div class="file-left">
-                                            <!-- <img src /> -->
-                                        </div>
-                                        <div class="file-mid">
-                                            <div class="mid-top">
-                                                <p>{{chiFileCommitItem.commentContent}}</p>
-                                            </div>
-                                            <div class="mid-bot">
-                                                <p>{{chiFileCommitItem.commentProson}}</p>&nbsp;&nbsp;
-                                                <p
-                                                    style="margin-left: 10px"
-                                                >评论时间：{{chiFileCommitItem.commentTime}}</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <Comments :id="chiFileItem.id"></Comments>
                                 </div>
                              </template>
                         </div>
@@ -214,6 +195,7 @@
 
 <script>
 import Reply from './show/Reply'
+import Comments from './show/Comments'
 import { Toast, MessageBox } from 'mint-ui'
 
 export default {
@@ -228,7 +210,8 @@ export default {
         items: Array
     },
     components: {
-        Reply
+        Reply,
+        Comments
     },
     methods: {
         /* 2020/8/24

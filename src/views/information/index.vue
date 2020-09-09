@@ -317,6 +317,8 @@ export default {
             for (const value of this.items) {
                 value.isColor = false
             }
+            // select
+            this.selected = '0'
             console.log('ac-true')
             // 不建议直接操作store
             this.$store.state.informationListCache = []
