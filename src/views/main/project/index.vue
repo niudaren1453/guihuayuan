@@ -102,6 +102,7 @@ export default {
     },
     deactivated() {
         this.$store.informationCache = true
+        console.log(this.$store.state.informationCache)
     },
     methods: {
         handleShow (i) {

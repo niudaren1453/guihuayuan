@@ -13,20 +13,20 @@ import '@/assets/global.css'
 import '@/assets/icon.css'
 import '@/assets/stylus/global.styl'
 import axios from 'axios'
-// import { getToken } from '@/utils/auth.js'
+import { getToken } from '@/utils/auth.js'
 Vue.prototype.$axios = axios
 Vue.use(MintUI)
 Vue.use(Element)
 
-// Vue.config.productionTip = false
-// router.beforeEach((to, from, next) => {
-//     const role = getToken()
-//     if (!role && to.path !== '/login') {
-//         next('/login')
-//     } else {
-//         next()
-//     }
-// })
+Vue.config.productionTip = false
+router.beforeEach((to, from, next) => {
+    const role = getToken()
+    if (!role && to.path !== '/login') {
+        next('/login')
+    } else {
+        next()
+    }
+})
 
 new Vue({
     router,

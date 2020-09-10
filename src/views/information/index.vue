@@ -309,7 +309,7 @@ export default {
         // console.log(1)
     },
     activated () {
-        console.log(111)
+        console.log(this.$store.state.informationCache)
         // console.log(this.$route.query)
         // this.$route.query.title = 123
         // 用来解决projectnav的样式问题
@@ -317,6 +317,7 @@ export default {
             for (const value of this.items) {
                 value.isColor = false
             }
+            console.log('xx')
             // select
             this.selected = '0'
             console.log('ac-true')
@@ -497,19 +498,26 @@ export default {
         // 更多中的方法-------
         // 设置项目名字
         setProjectName(e) {
-            console.log(e)
-            this.$axios('http://58.22.125.43:8888/project/updateNickName/' + e + '/' + this.id + '/' + this.$store.state.phone).then(
+            // console.log(e)
+            this.$axios('http://58.22.125.43:8888/project/updateNickName?name=' + e + '&id=' + this.id + '&phone=' + this.$store.state.phone).then(
                 (res) => {
-                    Toast(res.data.message)
-                    this.isShowInput = false
-                    // this.$route.query.title = e
-                    this.$router.push({
-                        query: merge(this.$route.query, { title: e })
-                    })
-                    console.log(this.$route.query)
-                    setTimeout(() => {
-                        this.$router.go(0)
-                    }, 1500)
+                    // console.log(res)
+                    if (res.data.state === '200') {
+                        Toast(res.data.message)
+                        this.isShowInput = false
+                        // this.$route.query.title = e
+                        this.$router.push({
+                            query: merge(this.$route.query, { title: e })
+                        })
+                        console.log(this.$route.query)
+                        setTimeout(() => {
+                            this.$router.go(0)
+                        }, 1500)
+                    } else if (res.data.state === '403') {
+                        Toast(res.data.message)
+                    } else {
+                        Toast('未知错误')
+                    }
                 })
         },
         // 隐藏
