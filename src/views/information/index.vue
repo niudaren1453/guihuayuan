@@ -21,6 +21,7 @@
                         <mt-tab-item id="3">项目归档</mt-tab-item>
                         <mt-tab-item id="4">修改项目名</mt-tab-item>
                         <mt-tab-item id="5">任务列表</mt-tab-item>
+                        <mt-tab-item id="6">添加人员 </mt-tab-item>
                     </mt-navbar>
                     <mt-tab-container v-model="selected">
                         <mt-tab-container-item id="5">
@@ -162,6 +163,18 @@
         <!-- 添加子文件夹使用0 -->
         <ShowInput :isShow='isShowInput2' v-on:define="createFile"
         v-on:cancel='hideShowInput' />
+        <!-- vant overlay -->
+        <van-overlay :show="overlayShow">
+        <div class="vantWrapper" @click="overlayShow1">
+            <div class="vantBlock" @click.stop>
+                <mt-field placeholder="添加项目人员1" v-model="addProjectPerson[0]"></mt-field>
+                <mt-field placeholder="添加项目人员2" v-model="addProjectPerson[1]"></mt-field>
+                <mt-field placeholder="添加项目人员3" v-model="addProjectPerson[2]"></mt-field>
+                <mt-field placeholder="添加项目人员4" v-model="addProjectPerson[3]"></mt-field>
+                <mt-button type="default" @click.native="handleAddProjectPerson" style="position:absolute; bottom:0;left:50%;    transform: translateX(-50%);">确定</mt-button>
+            </div>
+        </div>
+        </van-overlay>
     </div>
 </template>
 
@@ -192,6 +205,7 @@ export default {
             isShowReply: false, // 是否显示评论弹窗
             isShowInput: false, // 是否显示input
             isShowInput2: false, // 是否显示input 创建子文件使用
+            overlayShow: false, // vant Ui overlayShow
             nowPosition: 1, // 当前的位置 0 是分页 1是非分页 2待定
             selected: 0, // 更多内容tab使用
             addIndex: 0, // 添加子文件夹的  父文件的索引
@@ -277,7 +291,8 @@ export default {
                 currentPage: 1,
                 limit: 3,
                 total: null
-            }
+            },
+            addProjectPerson: []
         }
     },
     components: {
@@ -548,6 +563,27 @@ export default {
         hideAssign() {
             this.assign.isShow = false
             this.selected = 0
+        },
+        // 添加人员
+        overlayShow1() {
+            this.overlayShow = false
+            this.selected = 0
+            this.addProjectPerson = []
+        },
+        handleAddProjectPerson() {
+            for (let i = 0; i < this.addProjectPerson.length; i++) {
+                if (this.addProjectPerson[i] === '') {
+                    this.addProjectPerson.splice(i, 1)
+                }
+            }
+            const personnelname = this.addProjectPerson.toString()
+            const params = { personnelname }
+            this.$axios.post('http://58.22.125.43:8888/proper/addperson?id=' + this.id + '&phone=' + this.$store.state.phone, params).then(res => {
+                console.log(res)
+                // console.log()
+                Toast(res.data.message)
+                this.overlayShow1()
+            })
         }
     },
     watch: {
@@ -628,6 +664,8 @@ export default {
                         this.projectPages.list = res.data.rows
                     }
                 )
+            } else if (this.selected === '6') {
+                this.overlayShow = true
             }
         }
     }
@@ -926,4 +964,18 @@ footer {
             font-weight 550
             padding-right 10px
             font-size 16px
+// vant遮罩层使用
+ .vantWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+
+  .vantBlock {
+    width: 80vw;
+    height: 60vh;
+    background-color: rgb(245,245,245);
+    position:relative;
+  }
 </style>

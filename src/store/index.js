@@ -9,7 +9,6 @@ Vue.use(Vuex)
 // if (myPhone === undefined) {
 //     myPhone = 11111111111
 // }
-// console.log(myPhone)
 export default new Vuex.Store({
     state: {
         // phone: myPhone, // 暂时写死  ，王金成phone

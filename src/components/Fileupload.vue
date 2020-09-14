@@ -293,6 +293,11 @@ export default {
         this.file = ''
         this.fileName = ''
         this.fileList = []
+        this.value1 = ''
+        this.value2 = ''
+        this.content = ''
+        this.command = ''
+        this.opValue1 = ''
     },
 
     methods: {
